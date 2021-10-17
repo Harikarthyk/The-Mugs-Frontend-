@@ -48,6 +48,7 @@ import { Link } from "react-router-dom";
   const Image = styled.img`
     height: 75%;
     z-index: 2;
+    max-width: 90%;
   `;
   
   const Icon = styled.div`
@@ -68,15 +69,15 @@ import { Link } from "react-router-dom";
   
   const Product = ({ item }) => {
     return (
-      <Container>
+      <Container key={item._id}>
         <Circle />
-        <Image src={item.img} />
+        <Image src={item.thumbnailImage} />
         <Info>
           <Icon>
             <ShoppingCartOutlined />
           </Icon>
           <Link
-            to="product/:productId"
+            to={`product/${item._id}`}
           >
           <Icon>
             <SearchOutlined />
