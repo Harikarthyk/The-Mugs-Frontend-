@@ -81,10 +81,11 @@ function navbar() {
                     <Logo>The MUGS.</Logo>
                     </Link>
                 </Center>
-                <Right>
+                <Right>{
+                    !localStorage.getItem('user') && 
                     <Link to="/login">
                         <MenuItem>GET STARTED</MenuItem>
-                    </Link>
+                    </Link>}
                     <Link to="/cart">
                    
                     <MenuItem>

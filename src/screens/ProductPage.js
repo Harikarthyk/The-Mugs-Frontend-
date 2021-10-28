@@ -1,9 +1,15 @@
 import { Add, Remove } from "@mui/icons-material";
+import { useState } from "react";
 import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
+import { API_ENDPOINT } from "../constants";
+import { requestHandler } from "../services";
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const Container = styled.div``;
 
@@ -18,8 +24,8 @@ const ImgContainer = styled.div`
 
 const Image = styled.img`
   width: 100%;
-  height: 90vh;
-  object-fit: cover;
+  height: 80vh;
+  object-fit: contain;
 `;
 
 const InfoContainer = styled.div`
@@ -74,10 +80,11 @@ const FilterSize = styled.select`
 const FilterSizeOption = styled.option``;
 
 const AddContainer = styled.div`
-  width: 50%;
+  width: 60%;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-top: 20px;
 `;
 
 const AmountContainer = styled.div`
@@ -103,34 +110,84 @@ const Button = styled.button`
   background-color: white;
   cursor: pointer;
   font-weight: 500;
+  margin-left: 25px;
   &:hover{
       background-color: #f8f4f4;
   }
 `;
 
 const ProductPage = () => {
+
+  const [product, setProduct] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const { productId } = useParams();
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(()=>{
+    getProductInfo();
+  },[]);
+
+  const getProductInfo = async() => {
+    setIsLoading(true);
+      const url = `${API_ENDPOINT}/products/${productId}`;
+        const data = null;
+        const header = {
+            'Content-Type': 'application/json',
+        };
+        const method = "get";
+        const response = await requestHandler(url, data, header, method);
+        if(!response?.success){
+          setIsLoading(false);
+          alert('Something Went Wrong');
+          return;
+        } 
+        const { success } = response ;
+        if(success === true){ 
+          setProduct({...response?.product});
+          console.log(response?.product)
+          setIsLoading(false);
+        }else{
+          setIsLoading(false);
+          alert('Something Went Wrong');
+          return;
+        }
+  }
+
   return (
     <Container>
       <Navbar />
       <Announcement />
       <Wrapper>
         <ImgContainer>
-          <Image src="https://i.ibb.co/S6qMxwr/jean.jpg" />
+          {
+            isLoading === true ? 
+              <Skeleton width={"100%"} height="100%" />
+            :
+            <Image src={product?.gallery[0]} />
+          }
+          
         </ImgContainer>
         <InfoContainer>
-          <Title>Denim Jumpsuit</Title>
+          <Title>{product?.name}</Title>
           <Desc>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-            venenatis, dolor in finibus malesuada, lectus ipsum porta nunc, at
-            iaculis arcu nisi sed mauris. Nulla fermentum vestibulum ex, eget
-            tristique tortor pretium ut. Curabitur elit justo, consequat id
-            condimentum ac, volutpat ornare.
+          {
+            isLoading === true ? 
+              <Skeleton count={4} width={"100%"} height="120%" />
+            :
+            product?.description
+          }
           </Desc>
-          <Price>$ 20</Price>
-          <FilterContainer>
+          <Price>
+          {
+            isLoading === true ? 
+              <Skeleton  width={140} height={35} />
+            :
+            "$" + product?.sellingPrice
+          }
+          </Price>
+          {/* <FilterContainer>
             <Filter>
               <FilterTitle>Color</FilterTitle>
               <FilterColor color="black" />
@@ -147,7 +204,7 @@ const ProductPage = () => {
                 <FilterSizeOption>XL</FilterSizeOption>
               </FilterSize>
             </Filter>
-          </FilterContainer>
+          </FilterContainer> */}
           <AddContainer>
             <AmountContainer>
               <Remove />

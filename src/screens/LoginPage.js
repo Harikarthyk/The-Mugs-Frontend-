@@ -52,12 +52,14 @@ const Logo = styled.img`
     margin-bottom : 50px
 `;
 
+
 function LoginPage() {
     useEffect(() => {
         window.scrollTo(0, 0);
      }, []);
     const responseGoogle = (res) => {
-        console.log(res)
+        // console.log(res.profileObj);
+        localStorage.setItem('user', JSON.stringify(res.profileObj))
     }
     return (
         <Container>

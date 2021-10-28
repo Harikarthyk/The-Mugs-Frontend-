@@ -24,7 +24,6 @@ function HomePage() {
         const response = await requestHandler(url, data, header, method);
         const { products } = response;
         products.length = 6;
-        console.log(products)
         setProducts({
             ...products,
             isLoading: false,

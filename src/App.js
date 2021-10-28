@@ -8,32 +8,62 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  Link,
+  Redirect
 } from "react-router-dom";
 
+
+
+// function CheckUserExists({
+//   path
+// }) {
+
+//   if (false) {
+//     return (
+//       <Redirect exact path="/cart">
+//         <CartPage />
+//       </Redirect>
+//     )
+//   } else {
+//     return (
+//       <Redirect to="/login" />
+//     )
+//   }
+// }
+
+function BackToMain(){
+  return(
+    <Redirect to="/"/>
+  )
+}
 function App() {
   return (
     <Router>
       <Switch>
-        <Route path="/cart">
+        {/* <CheckUserExists path="/cart"> */}
+        <Route exact path="/cart">
           <CartPage />
         </Route>
-        <Route path="/login">
-          <LoginPage />
-        </Route>
-        <Route path="/product/*">
+        {/* </CheckUserExists> */}
+
+        <Route exact path="/product/:productId">
           <ProductPage />
         </Route>
-        <Route path="/collection/*">
+        <Route exact path="/collection/:collectionId">
           <ProductListPage />
         </Route>
-        <Route path="/login">
-          <LoginPage />
-        </Route>
-        
-        <Route path="/">
+        {!localStorage.getItem('user') &&
+          <Route exact path="/login">
+            <LoginPage />
+          </Route>
+        }
+
+        <Route exact path="/">
           <HomePage />
         </Route>
+        <BackToMain>
+          <HomePage />
+        </BackToMain>
       </Switch>
     </Router>
   )
