@@ -1,7 +1,7 @@
 import { Add, Remove } from "@mui/icons-material";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
@@ -155,9 +155,11 @@ const ProductPage = () => {
         }
   }
 
+  const history = useHistory();
+
   return (
     <Container>
-      <Navbar />
+      <Navbar history={history} />
       <Announcement />
       <Wrapper>
         <ImgContainer>

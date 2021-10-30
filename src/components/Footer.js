@@ -7,6 +7,7 @@ import {
   Room,
   Twitter,
 } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { forMobile } from "../responsive";
 
@@ -60,8 +61,6 @@ const List = styled.ul`
     margin: 0;
     padding: 0;
     list-style: none;
-    display: flex;
-    flex-wrap: wrap;
   `;
 
 const ListItem = styled.li`
@@ -92,9 +91,7 @@ const Footer = () => {
       <Left>
         <Logo>The MUGS.</Logo>
         <Desc>
-          There are many variations of passages of Lorem Ipsum available, but
-          the majority have suffered alteration in some form, by injected
-          humour, or randomized words which don’t look even slightly believable.
+          Gift your Friends, Family, Love with something different, Stay Connect with The Mugs.
         </Desc>
         <SocialContainer>
           <SocialIcon color="3B5999">
@@ -114,16 +111,25 @@ const Footer = () => {
       <Center>
         <Title>Useful Links</Title>
         <List>
-          <ListItem>Home</ListItem>
-          <ListItem>Cart</ListItem>
-          <ListItem>Man Fashion</ListItem>
+          
+            <ListItem>
+            <Link to="/" style={{color: "black"}}>Home 
+            </Link>
+            </ListItem>
+          
+          <ListItem>
+          <Link to="/cart" style={{color: "black"}}>Cart 
+            </Link>
+          </ListItem>
+        
+          {/* <ListItem>Man Fashion</ListItem>
           <ListItem>Woman Fashion</ListItem>
           <ListItem>Accessories</ListItem>
           <ListItem>My Account</ListItem>
           <ListItem>Order Tracking</ListItem>
           <ListItem>Wishlist</ListItem>
-          <ListItem>Wishlist</ListItem>
-          <ListItem>Terms</ListItem>
+          <ListItem>Wishlist</ListItem>*/}
+          <ListItem>Terms</ListItem> 
         </List>
       </Center>
       <Right>

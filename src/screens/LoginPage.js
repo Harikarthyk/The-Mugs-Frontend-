@@ -1,10 +1,14 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
+import { useState } from 'react';
 import { GoogleLogin } from 'react-google-login';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import Announcement from '../components/Announcement';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
+import { API_ENDPOINT } from '../constants';
 import { forMobile } from '../responsive';
+import { requestHandler } from '../services';
 
 const Container = styled.div`
 `
@@ -21,8 +25,8 @@ const ImageWrapper = styled.div`
     justify-content: center;
     align-items: center;
     ${forMobile({
-        display: "none"
-    })}
+    display: "none"
+})}
 `;
 
 const Image = styled.img`
@@ -56,14 +60,38 @@ const Logo = styled.img`
 function LoginPage() {
     useEffect(() => {
         window.scrollTo(0, 0);
-     }, []);
-    const responseGoogle = (res) => {
-        // console.log(res.profileObj);
-        localStorage.setItem('user', JSON.stringify(res.profileObj))
+    }, []);
+
+    const[isLoading, setIsLoading] = useState(false);
+
+    const history = useHistory();
+    const responseGoogle = async(res) => {
+        setIsLoading(true);
+        const url = `${API_ENDPOINT}/users/auth`;
+        const data = res.profileObj;
+        const header = {
+            'Content-Type': 'application/json',
+        };
+        const method = "post";
+        const response = await requestHandler(url, data, header, method);
+        setIsLoading(false);
+        const {success} = response;
+        if(success === true){
+            const { token, user } = response;
+            localStorage.setItem('token',token);
+            localStorage.setItem('user', JSON.stringify(user));
+            // alert(JSON.stringify(history))
+            // console.log(history);
+            // history.goBack();
+            history.replace('/');
+        } else{
+            alert('Something went wrong');
+        }
+        // localStorage.setItem('user', JSON.stringify(res.profileObj))
     }
     return (
         <Container>
-            <Navbar />
+            <Navbar history={history} />
             <Announcement />
             <Wrapper>
                 <ImageWrapper>
@@ -75,7 +103,9 @@ function LoginPage() {
                     <GoogleLogin
                         clientId={'322501477862-c7dd2lpqggvsmhok7au0baha7ee88bbv.apps.googleusercontent.com'}
                         onSuccess={responseGoogle}
-                        onFailure={responseGoogle}
+                        onFailure={() => {
+
+                        }}
                     >
                         <span> Login with Google</span>
                     </GoogleLogin>

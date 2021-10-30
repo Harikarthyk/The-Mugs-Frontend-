@@ -4,7 +4,7 @@ import Announcement from '../components/Announcement';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import Products from '../components/Products';
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { API_ENDPOINT } from '../constants';
 import { requestHandler } from '../services';
 import Skeleton from 'react-loading-skeleton'
@@ -44,6 +44,8 @@ function ProductListPage() {
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const { collectionId } = useParams();
+
+  const history = useHistory();
     
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -65,7 +67,7 @@ function ProductListPage() {
 
     return (
         <div>
-            <Navbar />
+            <Navbar history={history} />
             <Announcement />
             <Title>
                 {isLoading === true ?

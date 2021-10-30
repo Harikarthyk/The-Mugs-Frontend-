@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
+import { useHistory } from "react-router-dom";
 
 const Container = styled.div``;
 
@@ -147,12 +148,13 @@ const Button = styled.button`
 `;
 
 const Cart = () => {
+  const history = useHistory();
   useEffect(() => {
     window.scrollTo(0, 0);
  }, []);
   return (
     <Container>
-      <Navbar />
+      <Navbar history={history} />
       <Announcement />
       <Wrapper>
         <Title>YOUR BAG</Title>

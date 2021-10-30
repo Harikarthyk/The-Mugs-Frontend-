@@ -31,9 +31,9 @@ import {
 //   }
 // }
 
-function BackToMain(){
-  return(
-    <Redirect to="/"/>
+function BackToMain() {
+  return (
+    <Redirect to="/" />
   )
 }
 function App() {

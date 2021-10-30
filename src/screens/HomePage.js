@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react'
+import { useHistory } from 'react-router-dom'
 import Announcement from '../components/Announcement'
 import Categories from '../components/Categories'
 import Footer from '../components/Footer'
@@ -9,6 +10,8 @@ import { API_ENDPOINT } from '../constants'
 import { requestHandler } from '../services'
 
 function HomePage() {
+
+  const history = useHistory();
     const [products, setProducts] = useState({
         data:[],
         isLoading: true,
@@ -39,7 +42,7 @@ function HomePage() {
     return (
         <div>
             <Announcement/>
-            <Navbar/>
+            <Navbar history={history}/>
             <Slider/>
             <Categories/>
             <Products products={products.data} isLoading={products.isLoading} />

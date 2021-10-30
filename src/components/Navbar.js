@@ -67,7 +67,11 @@ cursor: pointer;
 ${forMobile({ display: "none" })}
 `;
 
-function navbar() {
+function navbar({history}) {
+    const logoutHandler = async() => {
+        localStorage.clear();
+        history.push('/');
+    }
     return (
         <Container>
             <Wrapper>
@@ -82,10 +86,17 @@ function navbar() {
                     </Link>
                 </Center>
                 <Right>{
-                    !localStorage.getItem('user') && 
+                    !localStorage.getItem('user') ? 
+                    
                     <Link to="/login">
                         <MenuItem>GET STARTED</MenuItem>
-                    </Link>}
+                    </Link>
+                    :
+                    <div onClick={logoutHandler}>
+                        <MenuItem>LOGOUT</MenuItem>
+                    </div>
+                
+                    }
                     <Link to="/cart">
                    
                     <MenuItem>
