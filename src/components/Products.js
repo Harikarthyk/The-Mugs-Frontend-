@@ -26,7 +26,12 @@ const ProductContainer = styled.div`
 function Products({ products, isLoading }) {
     // const [isLoading, setIsLoading] = useState(true);
     // const [products, setProducts] = useState([]);
-    const dummyArray = [1, 2, 3, 4, 5, 6, 7, 8];
+    const dummyArray = [1, 2, 3, 4, 5, 6, 7];
+
+    const cartListener = async() => {
+        
+    }
+
     return (
         <Container>
             {isLoading === true ?
@@ -43,7 +48,7 @@ function Products({ products, isLoading }) {
                 })
                 :
                 products.map((item) => (
-                    <Product item={item} key={item.id} />
+                    <Product onClick={cartListener} item={item} key={item.id} />
                 ))}
         </Container>
     )
