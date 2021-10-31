@@ -9,6 +9,8 @@ import { API_ENDPOINT } from '../constants';
 import { requestHandler } from '../services';
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { connect } from 'react-redux';
+import { addProduct, setCart } from '../redux/action/cart';
 
 const Container = styled.div`
 `;
@@ -39,7 +41,7 @@ const Select = styled.select`
 
 const Option = styled.option``;
 
-function ProductListPage() {
+function ProductListPage({user, cart, addProductToCart, setCart}) {
     const [collection, setCollection] = useState({});
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -67,7 +69,7 @@ function ProductListPage() {
 
     return (
         <div>
-            <Navbar history={history} />
+                <Navbar user={user} cart={cart} history={history}/>
             <Announcement />
             <Title>
                 {isLoading === true ?
@@ -115,10 +117,24 @@ function ProductListPage() {
                     </Select>
                 </Filter>
             </FilterContainer> */}
-            <Products products={products} isLoading={isLoading} />
+            <Products cart={cart} setCart={setCart} addProductToCart={addProductToCart} products={products} isLoading={isLoading} />
             <Footer />
         </div>
     )
 }
 
-export default ProductListPage;
+
+const mapDispatchToProps = dispatch => ({
+    setCart: user => dispatch(setCart(user)),
+    addProductToCart: product => dispatch(addProduct(product)),
+});
+
+const mapStateToProps = state => {
+    return {
+        cart: state.cart,
+        user: state.user,
+        wishlist: state.wishlist
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)( ProductListPage);

@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { GoogleLogin } from 'react-google-login';
+import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import Announcement from '../components/Announcement';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import { API_ENDPOINT } from '../constants';
+import { setUser } from '../redux/action/user';
 import { forMobile } from '../responsive';
 import { requestHandler } from '../services';
 
@@ -57,15 +59,15 @@ const Logo = styled.img`
 `;
 
 
-function LoginPage() {
+function LoginPage({ user, cart, setUser }) {
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
 
-    const[isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const history = useHistory();
-    const responseGoogle = async(res) => {
+    const responseGoogle = async (res) => {
         setIsLoading(true);
         const url = `${API_ENDPOINT}/users/auth`;
         const data = res.profileObj;
@@ -75,23 +77,25 @@ function LoginPage() {
         const method = "post";
         const response = await requestHandler(url, data, header, method);
         setIsLoading(false);
-        const {success} = response;
-        if(success === true){
+        const { success } = response;
+        if (success === true) {
             const { token, user } = response;
-            localStorage.setItem('token',token);
-            localStorage.setItem('user', JSON.stringify(user));
-            // alert(JSON.stringify(history))
-            // console.log(history);
+            localStorage.setItem('token', token);
+            setUser({
+                token: token,
+                user: user
+            });
             // history.goBack();
             history.replace('/');
-        } else{
+        } else {
             alert('Something went wrong');
         }
-        // localStorage.setItem('user', JSON.stringify(res.profileObj))
     }
+
+
     return (
         <Container>
-            <Navbar history={history} />
+            <Navbar user={user} cart={cart} history={history}/>
             <Announcement />
             <Wrapper>
                 <ImageWrapper>
@@ -107,7 +111,7 @@ function LoginPage() {
 
                         }}
                     >
-                        <span> Login with Google</span>
+                        <span> Login with Google </span>
                     </GoogleLogin>
                 </Text>
             </Wrapper>
@@ -116,4 +120,16 @@ function LoginPage() {
     )
 }
 
-export default LoginPage
+
+const mapDispatchToProps = dispatch => ({
+    setUser: user => dispatch(setUser(user)),
+});
+
+const mapStateToProps = state => {
+    return {
+        cart: state.cart,
+        user: state.user,
+        wishlist: state.wishlist
+    };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);

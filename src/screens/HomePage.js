@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react'
+import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import Announcement from '../components/Announcement'
 import Categories from '../components/Categories'
@@ -6,12 +7,13 @@ import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
 import Products from '../components/Products'
 import Slider from '../components/Slider'
-import { API_ENDPOINT } from '../constants'
-import { requestHandler } from '../services'
+import { API_ENDPOINT } from '../constants';
+import { addProduct, setCart } from '../redux/action/cart';
+import { requestHandler } from '../services';
 
-function HomePage() {
+function HomePage({ user, cart, addProductToCart, setCart }) {
 
-  const history = useHistory();
+    const history = useHistory();
     const [products, setProducts] = useState({
         data:[],
         isLoading: true,
@@ -32,7 +34,7 @@ function HomePage() {
             isLoading: false,
             data: products
         });
-    }
+    };
     
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -42,13 +44,39 @@ function HomePage() {
     return (
         <div>
             <Announcement/>
-            <Navbar history={history}/>
+
+            <Navbar 
+                user={user} 
+                cart={cart} 
+                history={history}
+            />
+
             <Slider/>
             <Categories/>
-            <Products products={products.data} isLoading={products.isLoading} />
+
+            <Products 
+                cart={cart} 
+                setCart={setCart} 
+                addProductToCart={addProductToCart} 
+                products={products.data} 
+                isLoading={products.isLoading} 
+            />
+
             <Footer/>
         </div>
     )
 }
 
-export default HomePage
+const mapDispatchToProps = dispatch => ({
+    addProductToCart: product => dispatch(addProduct(product)),
+    setCart: cart => dispatch(setCart(cart)),
+});
+
+const mapStateToProps = state => {
+    return {
+        cart: state.cart,
+        user: state.user,
+        wishlist: state.wishlist
+    };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(HomePage);

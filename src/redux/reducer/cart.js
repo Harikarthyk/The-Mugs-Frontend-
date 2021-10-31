@@ -1,12 +1,14 @@
-const initialState = {};
+const initialState = {
+};
 
-const cart = async (state = initialState, action) => {
+const cart = (state = initialState, action) => {
     switch (action.type) {
-        case 'SET_CART':
+        case 'SET_CART':{
             const { payload } = action;
             return {
                 ...payload
             };
+        }
         case 'ADD_PRODUCT': {
             const { payload } = action;
             const { product, quantity } = payload;

@@ -23,13 +23,30 @@ const ProductContainer = styled.div`
 // height: 350px;
 `;
 
-function Products({ products, isLoading }) {
+function Products({ products, isLoading, cart, addProductToCart, setCart }) {
     // const [isLoading, setIsLoading] = useState(true);
     // const [products, setProducts] = useState([]);
     const dummyArray = [1, 2, 3, 4, 5, 6, 7];
 
-    const cartListener = async() => {
-        
+    const cartListener = async(product, newQuantity = 1) => {
+        if(!cart?.products){
+            setCart({
+                total: product.sellingPrice * newQuantity,
+                products: [{
+                    product: product,
+                    quantity: newQuantity
+                }],
+            });
+            return;
+        }
+        const exists = await cart?.products?.filter(item => item.product._id === product._id);
+        // console.log(exists)
+        if(exists?.length === 0){
+            addProductToCart({
+                product: product,
+                quantity: newQuantity
+            });
+        };
     }
 
     return (
@@ -48,7 +65,7 @@ function Products({ products, isLoading }) {
                 })
                 :
                 products.map((item) => (
-                    <Product onClick={cartListener} item={item} key={item.id} />
+                    <Product key={item._id} cartListener={cartListener} item={item} key={item.id} />
                 ))}
         </Container>
     )

@@ -11,7 +11,8 @@ import {
   Link,
   Redirect
 } from "react-router-dom";
-
+import { connect } from 'react-redux';
+import { setCart } from './redux/action/cart';
 
 
 // function CheckUserExists({
@@ -31,28 +32,33 @@ import {
 //   }
 // }
 
-function BackToMain() {
+function WrongRoute() {
   return (
     <Redirect to="/" />
   )
 }
-function App() {
+
+function App({ user, cart }) {
   return (
     <Router>
       <Switch>
+
         {/* <CheckUserExists path="/cart"> */}
         <Route exact path="/cart">
           <CartPage />
         </Route>
+        {console.log(user,'----',cart)}
         {/* </CheckUserExists> */}
 
         <Route exact path="/product/:productId">
           <ProductPage />
         </Route>
+
         <Route exact path="/collection/:collectionId">
           <ProductListPage />
         </Route>
-        {!localStorage.getItem('user') &&
+
+        {!user?.token  &&
           <Route exact path="/login">
             <LoginPage />
           </Route>
@@ -61,12 +67,25 @@ function App() {
         <Route exact path="/">
           <HomePage />
         </Route>
-        <BackToMain>
+
+        <WrongRoute>
           <HomePage />
-        </BackToMain>
+        </WrongRoute>
+
       </Switch>
     </Router>
   )
 }
 
-export default App;
+const mapDispatchToProps = dispatch => ({
+  setCart: cart => dispatch(setCart(cart)),
+});
+
+const mapStateToProps = state => {
+  return {
+      cart: state.cart,
+      user: state.user,
+      wishlist: state.wishlist
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(App);

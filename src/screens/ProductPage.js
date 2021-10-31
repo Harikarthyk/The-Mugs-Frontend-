@@ -10,6 +10,8 @@ import { API_ENDPOINT } from "../constants";
 import { requestHandler } from "../services";
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css';
+import { connect } from "react-redux";
+import { addProduct, setCart } from "../redux/action/cart";
 
 const Container = styled.div``;
 
@@ -116,7 +118,7 @@ const Button = styled.button`
   }
 `;
 
-const ProductPage = () => {
+const ProductPage = ({user, cart, setCart, addProductToCart}) => {
 
   const [product, setProduct] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -125,69 +127,69 @@ const ProductPage = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     getProductInfo();
-  },[]);
+  }, []);
 
-  const getProductInfo = async() => {
+  const getProductInfo = async () => {
     setIsLoading(true);
-      const url = `${API_ENDPOINT}/products/${productId}`;
-        const data = null;
-        const header = {
-            'Content-Type': 'application/json',
-        };
-        const method = "get";
-        const response = await requestHandler(url, data, header, method);
-        if(!response?.success){
-          setIsLoading(false);
-          alert('Something Went Wrong');
-          return;
-        } 
-        const { success } = response ;
-        if(success === true){ 
-          setProduct({...response?.product});
-          console.log(response?.product)
-          setIsLoading(false);
-        }else{
-          setIsLoading(false);
-          alert('Something Went Wrong');
-          return;
-        }
+    const url = `${API_ENDPOINT}/products/${productId}`;
+    const data = null;
+    const header = {
+      'Content-Type': 'application/json',
+    };
+    const method = "get";
+    const response = await requestHandler(url, data, header, method);
+    if (!response?.success) {
+      setIsLoading(false);
+      alert('Something Went Wrong');
+      return;
+    }
+    const { success } = response;
+    if (success === true) {
+      setProduct({ ...response?.product });
+      console.log(response?.product)
+      setIsLoading(false);
+    } else {
+      setIsLoading(false);
+      alert('Something Went Wrong');
+      return;
+    }
   }
 
   const history = useHistory();
 
   return (
     <Container>
-      <Navbar history={history} />
+      <Navbar user={user} cart={cart} history={history} />
       <Announcement />
       <Wrapper>
         <ImgContainer>
           {
-            isLoading === true ? 
+            isLoading === true ?
               <Skeleton width={"100%"} height="100%" />
-            :
-            <Image src={product?.gallery[0]} />
+              :
+              <Image src={product?.gallery[0]} />
           }
-          
+
         </ImgContainer>
         <InfoContainer>
           <Title>{product?.name}</Title>
           <Desc>
-          {
-            isLoading === true ? 
-              <Skeleton count={4} width={"100%"} height="120%" />
-            :
-            product?.description
-          }
+            {
+              isLoading === true ?
+                <Skeleton count={4} width={"100%"} height="120%" />
+                :
+                product?.description
+            }
           </Desc>
           <Price>
-          {
-            isLoading === true ? 
-              <Skeleton  width={140} height={35} />
-            :
-            "$" + product?.sellingPrice
-          }
+            {
+              isLoading === true ?
+                <Skeleton width={140} height={35} />
+                :
+                "$" + product?.sellingPrice
+            }
           </Price>
           {/* <FilterContainer>
             <Filter>
@@ -222,4 +224,17 @@ const ProductPage = () => {
   );
 };
 
-export default ProductPage;
+const mapDispatchToProps = dispatch => ({
+  setCart: user => dispatch(setCart(user)),
+  addProductToCart: product => dispatch(addProduct(product)),
+});
+
+const mapStateToProps = state => {
+  return {
+      cart: state.cart,
+      user: state.user,
+      wishlist: state.wishlist
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductPage);

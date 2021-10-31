@@ -27,7 +27,7 @@ const Wrapper = styled.div`
 
     flex: 1,
     display: "flex",
-    })}
+})}
 `;
 const Left = styled.div`
     flex:1;
@@ -67,8 +67,9 @@ cursor: pointer;
 ${forMobile({ display: "none" })}
 `;
 
-function navbar({history}) {
-    const logoutHandler = async() => {
+function navbar({ history, user, cart }) {
+    console.log(cart,'---nav--')
+    const logoutHandler = async () => {
         localStorage.clear();
         history.push('/');
     }
@@ -82,29 +83,31 @@ function navbar({history}) {
                     <Link
                         to="/"
                     >
-                    <Logo>The MUGS.</Logo>
+                        <Logo>The MUGS.</Logo>
                     </Link>
                 </Center>
                 <Right>{
-                    !localStorage.getItem('user') ? 
-                    
-                    <Link to="/login">
-                        <MenuItem>GET STARTED</MenuItem>
-                    </Link>
-                    :
-                    <div onClick={logoutHandler}>
-                        <MenuItem>LOGOUT</MenuItem>
-                    </div>
-                
-                    }
+                    user?.token ?
+                        <div style={{
+                            marginRight: 10
+                        }} onClick={logoutHandler}>
+                            <MenuItem>LOGOUT</MenuItem>
+                        </div>
+                        :
+                        <Link to="/login">
+                            <MenuItem>GET STARTED</MenuItem>
+                        </Link>
+                }
                     <Link to="/cart">
-                   
-                    <MenuItem>
-                        <Badge badgeContent={4} color="primary">
-                            <ShoppingCartOutlined />
-                        </Badge>
-                    </MenuItem>
-                </Link>
+                        <MenuItem>
+                            {cart?.products ? <Badge badgeContent={cart?.products?.length} color="primary">
+                                <ShoppingCartOutlined />
+                            </Badge>
+                                :
+                                <ShoppingCartOutlined />
+                            }
+                        </MenuItem>
+                    </Link>
                 </Right>
             </Wrapper>
         </Container>

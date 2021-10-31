@@ -67,17 +67,20 @@ import { Link } from "react-router-dom";
     }
   `;
   
-  const Product = ({ item }) => {
+  const Product = ({ item, cartListener }) => {
     return (
       <Container key={item._id}>
         <Circle />
         <Image src={item.thumbnailImage} />
         <Info>
-          <Icon>
+
+          <Icon onClick={()=>{
+            cartListener(item, 1);
+          }}>
             <ShoppingCartOutlined />
           </Icon>
           <Link
-            to={`product/${item._id}`}
+            to={`/product/${item._id}`}
           >
           <Icon>
             <SearchOutlined />
