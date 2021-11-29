@@ -23,7 +23,7 @@ const Categories = () => {
     const getCategories = async () => {
         try {
             setIsLoading(true);
-            const url = `${API_ENDPOINT}/categories`;
+            const url = `${API_ENDPOINT}/category`;
             const data = null;
             const header = {
                 'Content-Type': 'application/json',

@@ -55,7 +55,7 @@ function ProductListPage({user, cart, addProductToCart, setCart}) {
     }, []);
 
     const getAllProductsByCategory = async() => {
-        const url = `${API_ENDPOINT}/categories/${collectionId}`;
+        const url = `${API_ENDPOINT}/category/${collectionId}`;
         const data = null;
         const header = {
             'Content-Type': 'application/json',

@@ -133,7 +133,7 @@ const ProductPage = ({user, cart, setCart, addProductToCart}) => {
 
   const getProductInfo = async () => {
     setIsLoading(true);
-    const url = `${API_ENDPOINT}/products/${productId}`;
+    const url = `${API_ENDPOINT}/product/${productId}`;
     const data = null;
     const header = {
       'Content-Type': 'application/json',

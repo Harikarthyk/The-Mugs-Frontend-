@@ -1,6 +1,4 @@
 import axios from "axios";
-// import { API_URL } from "../constants/constants";
-import { toast } from "react-toastify";
 
 export const requestHandler = async (url, data, header, method) => {
     try {
@@ -10,10 +8,12 @@ export const requestHandler = async (url, data, header, method) => {
             data,
             headers: header
         });
+        console.log(response,"response")
         return response.data
     } catch (error) {
+        console.log(error)
         console.log("error utils", error.response);
-        if(error.response.status === 401 ) {
+        if(error.response?.status === 401 ) {
             console.log("401", 401);
             // let tokenURL = API_URL + "developer/token";
             // const tokenHeaders = { "Content-Type": "application/json" , "refresh-token": (typeof window !== 'undefined') ? localStorage.getItem("refresh_token") : "false"}

@@ -20,7 +20,7 @@ function HomePage({ user, cart, addProductToCart, setCart }) {
     });
 
     const getPopularProducts = async() => {
-        const url = `${API_ENDPOINT}/products/?sort=1`;
+        const url = `${API_ENDPOINT}/product/?limit=6&page=1`;
         const data = null;
         const header = {
             'Content-Type': 'application/json',
@@ -28,7 +28,6 @@ function HomePage({ user, cart, addProductToCart, setCart }) {
         const method = "get";
         const response = await requestHandler(url, data, header, method);
         const { products } = response;
-        products.length = 6;
         setProducts({
             ...products,
             isLoading: false,

@@ -215,6 +215,9 @@ const Cart = ({ cart, user }) => {
             })}
 
           </Info>
+          {
+            cart?.products?.length > 0 ?
+          
           <Summary length={cart?.products?.length}>
             <SummaryTitle>ORDER SUMMARY</SummaryTitle>
             {cart?.products?.map((item, index) => {
@@ -244,6 +247,17 @@ const Cart = ({ cart, user }) => {
             </SummaryItem>
             <Button>CHECKOUT NOW</Button>
           </Summary>
+  : 
+  <div
+            style={{
+              textAlign: "center",
+              fontSize: 18,
+              height: 120
+            }}
+  >
+    No Items found in the cart .
+  </div>
+  }
         </Bottom>
       </Wrapper>
       <Footer />
