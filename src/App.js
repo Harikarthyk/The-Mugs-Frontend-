@@ -4,6 +4,7 @@ import LoginPage from './screens/LoginPage';
 import HomePage from './screens/HomePage';
 import ProductPage from './screens/ProductPage';
 import ProductListPage from './screens/ProductListPage';
+import ProductListBannerPage from "./screens/ProductListBannerPage";
 import {
   BrowserRouter as Router,
   Switch,
@@ -43,13 +44,10 @@ function App({ user, cart }) {
     <Router>
       <Switch>
 
-        {/* <CheckUserExists path="/cart"> */}
         <Route exact path="/cart">
           <CartPage />
         </Route>
-        {console.log(user,'----',cart)}
-        {/* </CheckUserExists> */}
-
+       
         <Route exact path="/product/:productId">
           <ProductPage />
         </Route>
@@ -63,6 +61,10 @@ function App({ user, cart }) {
             <LoginPage />
           </Route>
         }
+
+        <Route exact path="/banner/:bannerId">
+          <ProductListBannerPage />
+        </Route>
 
         <Route exact path="/">
           <HomePage />

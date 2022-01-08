@@ -19,6 +19,8 @@ function HomePage({ user, cart, addProductToCart, setCart }) {
         isLoading: true,
     });
 
+
+
     const getPopularProducts = async() => {
         const url = `${API_ENDPOINT}/product/?limit=6&page=1`;
         const data = null;
@@ -51,6 +53,7 @@ function HomePage({ user, cart, addProductToCart, setCart }) {
             />
 
             <Slider/>
+            
             <Categories/>
 
             <Products 

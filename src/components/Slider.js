@@ -4,6 +4,8 @@ import { useState } from "react";
 import styled from "styled-components";
 import { forMobile } from '../responsive';
 import { Link } from 'react-router-dom';
+import { API_ENDPOINT } from '../constants';
+import { requestHandler } from '../services';
 
 const Container = styled.div`
   width: 100%;
@@ -57,12 +59,20 @@ const ImgContainer = styled.div`
 `;
 
 const Image = styled.img`
-  height: 80%;
+  height: 100%;
 `;
 
 const InfoContainer = styled.div`
   flex: 1;
-  padding: 50px;
+  padding: 30px;
+  position: absolute;
+    z-index: 3;
+    background: white;
+    opacity: 0.7;
+    left: 
+}
+
+
 `;
 
 const Title = styled.h1`
@@ -101,35 +111,20 @@ function Slider() {
         }
     }
 
-    useEffect(() => {
+    useEffect(async() => {
 
         try {
             setIsLoading(true);
-            const data = [
-                {
-                    id: 1,
-                    img: "https://i.ibb.co/XsdmR2c/1.png",
-                    title: "SUMMER SALE",
-                    desc: "DON'T COMPROMISE ON STYLE! GET FLAT 30% OFF FOR NEW ARRIVALS.",
-                    bg: "f5fafd",
-                },
-                {
-                    id: 2,
-                    img: "https://i.ibb.co/DG69bQ4/2.png",
-                    title: "AUTUMN COLLECTION",
-                    desc: "DON'T COMPROMISE ON STYLE! GET FLAT 50% OFF FOR NEW ARRIVALS.",
-                    bg: "fcf1ed",
-                },
-                {
-                    id: 3,
-                    img: "https://i.ibb.co/cXFnLLV/3.png",
-                    title: "LOUNGEWEAR LOVE",
-                    desc: "DON'T COMPROMISE ON STYLE! GET FLAT 300% OFF FOR NEW ARRIVALS.",
-                    bg: "fbf0f4",
-                },
-            ];
-
-            setSliderImages([...data]);
+            const url = `${API_ENDPOINT}/banner`;
+            const data = null;
+            const header = {
+                'Content-Type': 'application/json',
+            };
+            const method = "get";
+            const response = await requestHandler(url, data, header, method);
+            const { banners } = response;
+            console.log(banners, "Banner")
+            setSliderImages([...banners]);
             setIsLoading(false);
         } catch (error) {
 
@@ -143,25 +138,31 @@ function Slider() {
         <Container>
             <Arrow direction="left" onClick={() => handleClick("left")}>
                 <ArrowLeftOutlined />
-            </Arrow>
+            </Arrow>{isLoading === false &&
             <Wrapper slideIndex={currSliderImage}>
                 {sliderImages.map((item) => (
-                    <Slide bg={item.bg} key={item.id}>
+                    <Link     
+                        to={"banner/"+item._id}
+                        key={item._id}
+                    >
+                    <Slide bg={"red"} key={item._id}>
                         <ImgContainer>
-                            <Image src={item.img} />
+                            <Image src={item.bannerImage} alt={item.bannerHeading} />
                         </ImgContainer>
-                        <InfoContainer>
-                            <Title>{item.title}</Title>
-                            <Desc>{item.desc}</Desc>
+                        {/* <InfoContainer>
+                            <Title>{item.bannerHeading}</Title>
+                            <Desc>{item.bannerCaption}</Desc>
                             <Link
                                 to="collection/collectionId"
+                            
                             >
                                 <Button>SHOW NOW</Button>
                             </Link>
-                        </InfoContainer>
+                        </InfoContainer> */}
                     </Slide>
+                    </Link>
                 ))}
-            </Wrapper>
+            </Wrapper>}
             <Arrow direction="right" onClick={() => handleClick("right")}>
                 <ArrowRightOutlined />
             </Arrow>

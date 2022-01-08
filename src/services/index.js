@@ -8,7 +8,6 @@ export const requestHandler = async (url, data, header, method) => {
             data,
             headers: header
         });
-        console.log(response,"response")
         return response.data
     } catch (error) {
         console.log(error)
