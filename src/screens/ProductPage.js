@@ -169,7 +169,6 @@ const ProductPage = ({ user, cart, setCart, addProductToCart }) => {
         return;
       }
       const qty = (Number)(quantity) || 0;
-      console.log(qty)
       if (!qty) {
         alert("Enter Qty.");
         return;
@@ -192,11 +191,12 @@ const ProductPage = ({ user, cart, setCart, addProductToCart }) => {
       };
       const method = "put";
       const response = await requestHandler(url, data, header, method);
-      console.log(response)
       setAddingToCart(false);
       if (!response?.success) {
         alert('Something Went Wrong');
         return;
+      }else{
+
       }
       const { success } = response;
       if (success === true) {
@@ -205,8 +205,6 @@ const ProductPage = ({ user, cart, setCart, addProductToCart }) => {
         alert('Something Went Wrong');
         return;
       }
-
-
 
     } catch (error) {
       console.log(error)

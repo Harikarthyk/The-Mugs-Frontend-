@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Add, Remove } from "@mui/icons-material";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
@@ -6,8 +6,11 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { Link, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
-import { setCart } from "../redux/action/cart";
+// import { setCart } from "../redux/action/cart";
 import { forMobile } from "../responsive";
+import { requestHandler } from "../services";
+import { API_ENDPOINT } from "../constants";
+import { Button as RemoveButton } from "@mui/material";
 
 const Container = styled.div``;
 
@@ -131,7 +134,7 @@ const Summary = styled.div`
   border: 0.5px solid lightgray;
   border-radius: 10px;
   padding: 20px;
-  height: ${(props) => props.length * 110}px;
+  minHeight: ${(props) => props.length * 110}px;
 `;
 
 const SummaryTitle = styled.h1`
@@ -157,8 +160,47 @@ const Button = styled.button`
   color: white;
   font-weight: 600;
 `;
-const Cart = ({ cart, user }) => {
+const Cart = ({ user }) => {
   const history = useHistory();
+  const [cart, setCart] = useState({});
+
+  useEffect(async()=>{
+      const url = `${API_ENDPOINT}/cart`;
+      const data = null;
+      const header = {
+        'Content-Type': 'application/json',
+      };
+      const method = "get";
+      const response = await requestHandler(url, data, header, method);
+      if(response?.success === true){
+        console.log(response.cart)
+        setCart({...response?.cart});
+      }
+  },[])
+
+  const removeFromCartHandler = async(item) => {
+    try{
+      const url = `${API_ENDPOINT}/cart/items`;
+
+      const data = {
+        "item":item,
+        "mode": "REMOVE",
+        "price": item.price
+      };
+      const header = {
+        'Content-Type': 'application/json',
+      };
+      const method = "put";
+      const response = await requestHandler(url, data, header, method);
+      console.log(response);
+      if(response.success === true){
+        setCart({...response.cart});
+      }
+    }catch(error){
+
+    }
+  }
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -180,7 +222,7 @@ const Cart = ({ cart, user }) => {
         </Top>
         <Bottom>
           <Info>
-            {cart?.products?.map((item, index) => {
+            {cart?.items?.map((item, index) => {
               return (
                 <div key={index}>
                   <Product>
@@ -198,6 +240,7 @@ const Cart = ({ cart, user }) => {
                           {item.product?.size} {item.product?.color}
                         </ProductSize>
                       </Details>
+                      
                     </ProductDetail>
                     <PriceDetail>
                       <ProductAmountContainer>
@@ -207,20 +250,29 @@ const Cart = ({ cart, user }) => {
                       </ProductAmountContainer>
                       <ProductPrice>$ {item?.product?.sellingPrice}</ProductPrice>
                     </PriceDetail>
+                    <RemoveButton onClick={()=>{
+                      removeFromCartHandler({
+                        product: item?.product?._id,
+                        quantity: item?.quantity,
+                        price: item?.product?.sellingPrice
+                      });
+                    }} variant="outlined" color="error">
+                      Remove
+                    </RemoveButton>
                   </Product>
 
-                  {index + 1 !== item?.products?.length && <Hr />}
+                  {index + 1 !== item?.items?.length && <Hr />}
                 </div>
               )
             })}
 
           </Info>
           {
-            cart?.products?.length > 0 ?
+            cart?.items?.length > 0 ?
           
-          <Summary length={cart?.products?.length}>
+          <Summary length={cart?.items?.length}>
             <SummaryTitle>ORDER SUMMARY</SummaryTitle>
-            {cart?.products?.map((item, index) => {
+            {cart?.items?.map((item, index) => {
               return (
                 <SummaryItem key={index}>
                   <SummaryItemText>{item?.product?.name}</SummaryItemText>
@@ -231,7 +283,7 @@ const Cart = ({ cart, user }) => {
             )}
             <SummaryItem>
               <SummaryItemText>Subtotal</SummaryItemText>
-              <SummaryItemPrice>$ {cart?.total}</SummaryItemPrice>
+              <SummaryItemPrice>$ {cart?.subtotal}</SummaryItemPrice>
             </SummaryItem>
             {/* <SummaryItem>
               <SummaryItemText>Estimated Shipping</SummaryItemText>
@@ -265,11 +317,6 @@ const Cart = ({ cart, user }) => {
   );
 };
 
-
-const mapDispatchToProps = dispatch => ({
-  setCart: user => dispatch(setCart(user)),
-});
-
 const mapStateToProps = state => {
   return {
     cart: state.cart,
@@ -278,4 +325,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Cart);
+export default connect(mapStateToProps, null)(Cart);
