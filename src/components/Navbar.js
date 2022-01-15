@@ -68,7 +68,6 @@ ${forMobile({ display: "none" })}
 `;
 
 function navbar({ history, user, cart }) {
-    console.log(cart,'---nav--')
     const logoutHandler = async () => {
         localStorage.clear();
         history.push('/');

@@ -1,10 +1,10 @@
-import { Add, Remove } from "@mui/icons-material";
-import { useState } from "react";
-import { useEffect } from "react";
+
+import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
+import { TextField } from "@mui/material";
 import Navbar from "../components/Navbar";
 import { API_ENDPOINT } from "../constants";
 import { requestHandler } from "../services";
@@ -12,6 +12,11 @@ import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css';
 import { connect } from "react-redux";
 import { addProduct, setCart } from "../redux/action/cart";
+import ReactImageMagnify from 'react-image-magnify';
+
+import AwesomeSlider from 'react-awesome-slider';
+import 'react-awesome-slider/dist/styles.css';
+
 
 const Container = styled.div``;
 
@@ -82,7 +87,7 @@ const FilterSize = styled.select`
 const FilterSizeOption = styled.option``;
 
 const AddContainer = styled.div`
-  width: 60%;
+  width: 70%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -118,11 +123,12 @@ const Button = styled.button`
   }
 `;
 
-const ProductPage = ({user, cart, setCart, addProductToCart}) => {
+const ProductPage = ({ user, cart, setCart, addProductToCart }) => {
 
   const [product, setProduct] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const { productId } = useParams();
+  const [quantity, setQuantity] = useState(1);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -157,6 +163,60 @@ const ProductPage = ({user, cart, setCart, addProductToCart}) => {
     }
   }
 
+  const addToCartHandler = async () => {
+    try {
+      if (addingToCart === true) {
+        return;
+      }
+      const qty = (Number)(quantity) || 0;
+      console.log(qty)
+      if (!qty) {
+        alert("Enter Qty.");
+        return;
+      }
+      setAddingToCart(true);
+
+      const url = `${API_ENDPOINT}/cart/items`;
+
+      const data = {
+        "item": {
+          "product": product._id,
+          "quantity": qty,
+          "price": product.sellingPrice
+        },
+        "mode": "ADD",
+        "price": product.sellingPrice
+      };
+      const header = {
+        'Content-Type': 'application/json',
+      };
+      const method = "put";
+      const response = await requestHandler(url, data, header, method);
+      console.log(response)
+      setAddingToCart(false);
+      if (!response?.success) {
+        alert('Something Went Wrong');
+        return;
+      }
+      const { success } = response;
+      if (success === true) {
+
+      } else {
+        alert('Something Went Wrong');
+        return;
+      }
+
+
+
+    } catch (error) {
+      console.log(error)
+      alert("Something went wrong while adding to cart.");
+      setAddingToCart(false);
+    }
+  }
+
+  const [addingToCart, setAddingToCart] = useState(false);
+
   const history = useHistory();
 
   return (
@@ -169,8 +229,58 @@ const ProductPage = ({user, cart, setCart, addProductToCart}) => {
             isLoading === true ?
               <Skeleton width={"100%"} height="100%" />
               :
-              <Image src={product?.gallery[0]} />
+
+
+              // product.gallery.map((src) => (
+              //     <div>
+              //         <ReactImageMagnify
+              //             {...{
+              //                 smallImage: {
+              //                     alt: 'Wristwatch by Versace',
+              //                     // isFluidWidth: true,
+              //                     src: src.url,
+              //                     // srcSet: src.srcSet,
+              //                     // sizes: '(max-width: 480px) 100vw, (max-width: 1200px) 30vw, 360px'
+              //                 },
+              //                 largeImage: {
+              //                     src: src.url,
+              //                     width: 26,
+              //                     height: 20
+              //                 },
+              //                 lensStyle: { backgroundColor: 'rgba(0,0,0,.6)' }
+              //             }}
+              //         />
+              //     </div>
+              // ))
+
+              // <div style={{width: "100%", height: "100%"}}>
+              <AwesomeSlider style={{ width: "100%", height: "100%" }}>
+                {product.gallery.map(item => {
+                  return (
+                    <div style={{ width: "100%", height: "100%" }}>
+                      <ReactImageMagnify
+                        {...{
+                          smallImage:
+                          {
+                            alt: 'Wristwatch by Ted Baker London',
+                            isFluidWidth: true,
+                            src: item.url
+                          },
+                          largeImage: {
+                            src: item.url,
+                            width: 1200,
+                            height: 1800
+                          }
+                        }}
+                      />
+                    </div>
+                  )
+                })}
+              </AwesomeSlider>
+
+            // </div>
           }
+          {/* // <Image src={product?.gallery[0].url} /> */}
 
         </ImgContainer>
         <InfoContainer>
@@ -188,9 +298,20 @@ const ProductPage = ({user, cart, setCart, addProductToCart}) => {
               isLoading === true ?
                 <Skeleton width={140} height={35} />
                 :
-                "$" + product?.sellingPrice
+                "INR. " + product?.sellingPrice
             }
           </Price>
+          <div style={{
+            color: product.isActive ? "green" : "red"
+          }} >
+            {
+              isLoading === true ?
+                <Skeleton width={90} height={25} />
+                :
+                product.isActive === true ? "AVAILABLE" : "NOT AVAILABLE"
+              }
+          </div>
+
           {/* <FilterContainer>
             <Filter>
               <FilterTitle>Color</FilterTitle>
@@ -211,11 +332,26 @@ const ProductPage = ({user, cart, setCart, addProductToCart}) => {
           </FilterContainer> */}
           <AddContainer>
             <AmountContainer>
-              <Remove />
-              <Amount>1</Amount>
-              <Add />
+              <TextField
+                type="number"
+                InputProps={{
+                  inputProps: {
+                    max: product.stock > 10 ? 10 : product.stock, min: 1,
+                    inputMode: 'decimal'
+                  }
+                }}
+                style={{
+                  width: 100
+                }}
+                value={quantity}
+                onChange ={(e) => {
+                  setQuantity(e.target.value)
+                }}
+                id="qty"
+                label="Qty"
+              />
             </AmountContainer>
-            <Button>ADD TO CART</Button>
+            <Button onClick={addToCartHandler}>ADD TO CART</Button>
           </AddContainer>
         </InfoContainer>
       </Wrapper>
@@ -231,9 +367,9 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = state => {
   return {
-      cart: state.cart,
-      user: state.user,
-      wishlist: state.wishlist
+    cart: state.cart,
+    user: state.user,
+    wishlist: state.wishlist
   };
 };
 

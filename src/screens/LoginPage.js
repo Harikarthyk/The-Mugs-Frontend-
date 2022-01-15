@@ -69,7 +69,7 @@ function LoginPage({ user, cart, setUser }) {
     const history = useHistory();
     const responseGoogle = async (res) => {
         setIsLoading(true);
-        const url = `${API_ENDPOINT}/users/auth`;
+        const url = `${API_ENDPOINT}/user/google`;
         const data = res.profileObj;
         const header = {
             'Content-Type': 'application/json',

@@ -2,11 +2,17 @@ import axios from "axios";
 
 export const requestHandler = async (url, data, header, method) => {
     try {
+        axios.defaults.withCredentials = true
+        const token = localStorage.getItem("token");
         let response = await axios({
             method,
             url,
             data,
-            headers: header
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
         });
         return response.data
     } catch (error) {
