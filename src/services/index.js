@@ -44,12 +44,11 @@ export const requestHandler = async (url, data, header, method) => {
                 }
             }
         }
-        if (error.response.status === 403) {
-            localStorage.setItem("isLoggedIn", "false");
-            localStorage.setItem("userData", "");
-            localStorage.removeItem("access_token");
-            localStorage.removeItem("refresh_token");
-            return "login"
+        console.log(error.response?.status, "ss")
+        if (error.response?.status === 403) {
+            localStorage.clear();
+            // return "login"
+            window.location.href="/login";
         }
         return(error.response.data)
     }

@@ -164,26 +164,26 @@ const Cart = ({ user }) => {
   const history = useHistory();
   const [cart, setCart] = useState({});
 
-  useEffect(async()=>{
-      const url = `${API_ENDPOINT}/cart`;
-      const data = null;
-      const header = {
-        'Content-Type': 'application/json',
-      };
-      const method = "get";
-      const response = await requestHandler(url, data, header, method);
-      if(response?.success === true){
-        console.log(response.cart)
-        setCart({...response?.cart});
-      }
-  },[])
+  useEffect(async () => {
+    const url = `${API_ENDPOINT}/cart`;
+    const data = null;
+    const header = {
+      'Content-Type': 'application/json',
+    };
+    const method = "get";
+    const response = await requestHandler(url, data, header, method);
+    if (response?.success === true) {
+      console.log(response.cart)
+      setCart({ ...response?.cart });
+    }
+  }, [])
 
-  const removeFromCartHandler = async(item) => {
-    try{
+  const removeFromCartHandler = async (item) => {
+    try {
       const url = `${API_ENDPOINT}/cart/items`;
 
       const data = {
-        "item":item,
+        "item": item,
         "mode": "REMOVE",
         "price": item.price
       };
@@ -192,11 +192,37 @@ const Cart = ({ user }) => {
       };
       const method = "put";
       const response = await requestHandler(url, data, header, method);
-      console.log(response);
-      if(response.success === true){
-        setCart({...response.cart});
+      if (response.success === true) {
+        setCart({ ...response.cart });
       }
-    }catch(error){
+    } catch (error) {
+
+    }
+  }
+
+  const updateQuantity = async (qty, itemId, price) => {
+    try {
+      const url = `${API_ENDPOINT}/cart/items`;
+
+      const data = {
+        "item": {
+          "product": itemId,
+          "quantity": qty,
+          "price": price
+        },
+        "mode": "ADD",
+        "price": price
+      };
+      const header = {
+        'Content-Type': 'application/json',
+      };
+      const method = "put";
+      const response = await requestHandler(url, data, header, method);
+      console.log(response);
+      if (response.success === true) {
+        setCart({ ...response.cart });
+      }
+    } catch (error) {
 
     }
   }
@@ -212,7 +238,7 @@ const Cart = ({ user }) => {
         <Title>YOUR BAG</Title>
         <Top>
           <Link to="/">
-          <TopButton>CONTINUE SHOPPING</TopButton>
+            <TopButton>CONTINUE SHOPPING</TopButton>
           </Link>
           <TopTexts>
             <TopText>Shopping Bag({cart?.products?.length || 0})</TopText>
@@ -240,17 +266,29 @@ const Cart = ({ user }) => {
                           {item.product?.size} {item.product?.color}
                         </ProductSize>
                       </Details>
-                      
+
                     </ProductDetail>
                     <PriceDetail>
                       <ProductAmountContainer>
-                        <Add />
+                        {
+                          item.quantity < item?.product?.stock - 1 ?
+                            <Add onClick={() => {
+                              updateQuantity(item.quantity + 1, item?.product?._id, item.price);
+                            }} /> : <></>
+                        }
+
                         <ProductAmount>{item?.quantity}</ProductAmount>
-                        <Remove />
+                        {
+                          item.quantity > 1 ?
+                            <Remove onClick={() => {
+                              updateQuantity(item.quantity - 1, item.product?._id, item.price);
+                            }} /> : <></>
+                        }
+
                       </ProductAmountContainer>
                       <ProductPrice>$ {item?.product?.sellingPrice}</ProductPrice>
                     </PriceDetail>
-                    <RemoveButton onClick={()=>{
+                    <RemoveButton onClick={() => {
                       removeFromCartHandler({
                         product: item?.product?._id,
                         quantity: item?.quantity,
@@ -269,23 +307,23 @@ const Cart = ({ user }) => {
           </Info>
           {
             cart?.items?.length > 0 ?
-          
-          <Summary length={cart?.items?.length}>
-            <SummaryTitle>ORDER SUMMARY</SummaryTitle>
-            {cart?.items?.map((item, index) => {
-              return (
-                <SummaryItem key={index}>
-                  <SummaryItemText>{item?.product?.name}</SummaryItemText>
-                  <SummaryItemPrice>$ {item?.product?.sellingPrice}</SummaryItemPrice>
+
+              <Summary length={cart?.items?.length}>
+                <SummaryTitle>ORDER SUMMARY</SummaryTitle>
+                {cart?.items?.map((item, index) => {
+                  return (
+                    <SummaryItem key={index}>
+                      <SummaryItemText>{item?.product?.name}</SummaryItemText>
+                      <SummaryItemPrice>$ {item?.product?.sellingPrice}</SummaryItemPrice>
+                    </SummaryItem>
+                  )
+                }
+                )}
+                <SummaryItem>
+                  <SummaryItemText>Subtotal</SummaryItemText>
+                  <SummaryItemPrice>$ {cart?.subtotal}</SummaryItemPrice>
                 </SummaryItem>
-              )
-            }
-            )}
-            <SummaryItem>
-              <SummaryItemText>Subtotal</SummaryItemText>
-              <SummaryItemPrice>$ {cart?.subtotal}</SummaryItemPrice>
-            </SummaryItem>
-            {/* <SummaryItem>
+                {/* <SummaryItem>
               <SummaryItemText>Estimated Shipping</SummaryItemText>
               <SummaryItemPrice>$ 5.90</SummaryItemPrice>
             </SummaryItem>
@@ -293,23 +331,23 @@ const Cart = ({ user }) => {
               <SummaryItemText>Shipping Discount</SummaryItemText>
               <SummaryItemPrice>$ -5.90</SummaryItemPrice>
             </SummaryItem> */}
-            <SummaryItem type="total">
-              <SummaryItemText>Total</SummaryItemText>
-              <SummaryItemPrice>$ {cart?.total}</SummaryItemPrice>
-            </SummaryItem>
-            <Button>CHECKOUT NOW</Button>
-          </Summary>
-  : 
-  <div
-            style={{
-              textAlign: "center",
-              fontSize: 18,
-              height: 120
-            }}
-  >
-    No Items found in the cart .
-  </div>
-  }
+                <SummaryItem type="total">
+                  <SummaryItemText>Total</SummaryItemText>
+                  <SummaryItemPrice>$ {cart?.total}</SummaryItemPrice>
+                </SummaryItem>
+                <Button>CHECKOUT NOW</Button>
+              </Summary>
+              :
+              <div
+                style={{
+                  textAlign: "center",
+                  fontSize: 18,
+                  height: 120
+                }}
+              >
+                No Items found in the cart .
+              </div>
+          }
         </Bottom>
       </Wrapper>
       <Footer />
