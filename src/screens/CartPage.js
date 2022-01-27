@@ -11,6 +11,8 @@ import { forMobile } from "../responsive";
 import { requestHandler } from "../services";
 import { API_ENDPOINT } from "../constants";
 import { Button as RemoveButton } from "@mui/material";
+import LoadingOverlay from 'react-loading-overlay';
+
 
 const Container = styled.div``;
 
@@ -141,6 +143,16 @@ const SummaryTitle = styled.h1`
   font-weight: 200;
 `;
 
+const StyledLoader = styled(LoadingOverlay)`
+  width: '100%';
+  overflow: scroll;
+  .MyLoader_overlay {
+    background: rgba(255, 0, 0, 0.5);
+  }
+  &.MyLoader_wrapper--active {
+    overflow: hidden;
+  }
+`
 const SummaryItem = styled.div`
   margin: 30px 0px;
   display: flex;
@@ -163,6 +175,7 @@ const Button = styled.button`
 const Cart = ({ user }) => {
   const history = useHistory();
   const [cart, setCart] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(async () => {
     const url = `${API_ENDPOINT}/cart`;
@@ -171,7 +184,9 @@ const Cart = ({ user }) => {
       'Content-Type': 'application/json',
     };
     const method = "get";
+    setIsLoading(true);
     const response = await requestHandler(url, data, header, method);
+    setIsLoading(false);
     if (response?.success === true) {
       console.log(response.cart)
       setCart({ ...response?.cart });
@@ -191,7 +206,10 @@ const Cart = ({ user }) => {
         'Content-Type': 'application/json',
       };
       const method = "put";
+
+    setIsLoading(true);
       const response = await requestHandler(url, data, header, method);
+      setIsLoading(false);
       if (response.success === true) {
         setCart({ ...response.cart });
       }
@@ -217,8 +235,9 @@ const Cart = ({ user }) => {
         'Content-Type': 'application/json',
       };
       const method = "put";
+      setIsLoading(true);
       const response = await requestHandler(url, data, header, method);
-      console.log(response);
+      setIsLoading(false);
       if (response.success === true) {
         setCart({ ...response.cart });
       }
@@ -234,6 +253,10 @@ const Cart = ({ user }) => {
     <Container>
       <Navbar user={user} cart={cart} history={history} />
       <Announcement />
+      <StyledLoader
+        active={isLoading}
+        spinner
+      >
       <Wrapper>
         <Title>YOUR BAG</Title>
         <Top>
@@ -241,12 +264,13 @@ const Cart = ({ user }) => {
             <TopButton>CONTINUE SHOPPING</TopButton>
           </Link>
           <TopTexts>
-            <TopText>Shopping Bag({cart?.products?.length || 0})</TopText>
-            <TopText>Your Wishlist (0)</TopText>
+            <TopText>Shopping Bag({cart?.items?.length || 0})</TopText>
+            {/* <TopText>Your Wishlist (0)</TopText> */}
           </TopTexts>
           <TopButton type="filled">CHECKOUT NOW</TopButton>
         </Top>
         <Bottom>
+          
           <Info>
             {cart?.items?.map((item, index) => {
               return (
@@ -272,7 +296,9 @@ const Cart = ({ user }) => {
                       <ProductAmountContainer>
                         {
                           item.quantity < item?.product?.stock - 1 ?
-                            <Add onClick={() => {
+                            <Add style={{
+                              cursor: "pointer"
+                            }} onClick={() => {
                               updateQuantity(item.quantity + 1, item?.product?._id, item.price);
                             }} /> : <></>
                         }
@@ -280,7 +306,9 @@ const Cart = ({ user }) => {
                         <ProductAmount>{item?.quantity}</ProductAmount>
                         {
                           item.quantity > 1 ?
-                            <Remove onClick={() => {
+                            <Remove style={{
+                              cursor: "pointer"
+                            }} onClick={() => {
                               updateQuantity(item.quantity - 1, item.product?._id, item.price);
                             }} /> : <></>
                         }
@@ -294,7 +322,9 @@ const Cart = ({ user }) => {
                         quantity: item?.quantity,
                         price: item?.product?.sellingPrice
                       });
-                    }} variant="outlined" color="error">
+                    }} variant="outlined" style={{
+                      cursor: "pointer"
+                    }} color="error">
                       Remove
                     </RemoveButton>
                   </Product>
@@ -350,6 +380,7 @@ const Cart = ({ user }) => {
           }
         </Bottom>
       </Wrapper>
+      </StyledLoader>
       <Footer />
     </Container>
   );

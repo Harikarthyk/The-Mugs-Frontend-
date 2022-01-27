@@ -4,7 +4,7 @@ import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
-import { TextField } from "@mui/material";
+import { Snackbar, TextField } from "@mui/material";
 import Navbar from "../components/Navbar";
 import { API_ENDPOINT } from "../constants";
 import { requestHandler } from "../services";
@@ -16,6 +16,7 @@ import ReactImageMagnify from 'react-image-magnify';
 
 import AwesomeSlider from 'react-awesome-slider';
 import 'react-awesome-slider/dist/styles.css';
+import LoadingOverlay from "react-loading-overlay";
 
 
 const Container = styled.div``;
@@ -200,7 +201,10 @@ const ProductPage = ({ user, cart, setCart, addProductToCart }) => {
       }
       const { success } = response;
       if (success === true) {
-
+        setSnackbar({
+          isOpen: true,
+          message: "Added to cart."
+        })
       } else {
         alert('Something Went Wrong');
         return;
@@ -216,11 +220,31 @@ const ProductPage = ({ user, cart, setCart, addProductToCart }) => {
   const [addingToCart, setAddingToCart] = useState(false);
 
   const history = useHistory();
+  const [snackbar, setSnackbar] = useState({
+    isOpen: false,
+    message: ""
+  })
 
   return (
     <Container>
       <Navbar user={user} cart={cart} history={history} />
       <Announcement />
+      <LoadingOverlay
+        active={addingToCart || isLoading}
+        spinner
+      >
+        <Snackbar
+          open={snackbar.isOpen}
+          autoHideDuration={3000}
+          onClose={()=>{
+            setSnackbar({
+              isOpen: false,
+              message: ""
+            })
+          }}
+          message={snackbar?.message}
+          // action={action}
+        />
       <Wrapper>
         <ImgContainer>
           {
@@ -353,6 +377,7 @@ const ProductPage = ({ user, cart, setCart, addProductToCart }) => {
           </AddContainer>
         </InfoContainer>
       </Wrapper>
+      </LoadingOverlay>
       <Footer />
     </Container>
   );
