@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import Product from './Product';
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { API_ENDPOINT } from '../constants';
+import { requestHandler } from '../services';
+import { Snackbar, TextField } from "@mui/material";
 
 const Container = styled.div`
     padding: 20px;
@@ -27,45 +30,91 @@ function Products({ products, isLoading, cart, addProductToCart, setCart }) {
     // const [isLoading, setIsLoading] = useState(true);
     // const [products, setProducts] = useState([]);
     const dummyArray = [1, 2, 3, 4, 5, 6, 7];
+    const [addingToCart, setAddingToCart] = useState(false);
+    const [snackbar, setSnackbar] = useState({
+        message: '',
+        isOpen: false
+    })
 
-    const cartListener = async(product, newQuantity = 1) => {
-        if(!cart?.products){
-            setCart({
-                total: product.sellingPrice * newQuantity,
-                products: [{
-                    product: product,
-                    quantity: newQuantity
-                }],
-            });
-            return;
-        }
-        const exists = await cart?.products?.filter(item => item.product._id === product._id);
-        // console.log(exists)
-        if(exists?.length === 0){
-            addProductToCart({
-                product: product,
-                quantity: newQuantity
-            });
-        };
+    const cartListener = async(product) => {
+        try {
+            if (addingToCart === true) {
+              return;
+            }
+        
+            setAddingToCart(true);
+      
+            const url = `${API_ENDPOINT}/cart/items`;
+      
+            const data = {
+              "item": {
+                "product": product._id,
+                "quantity": 1,
+                "price": product.sellingPrice
+              },
+              "mode": "ADD",
+              "price": product.sellingPrice
+            };
+            const header = {
+              'Content-Type': 'application/json',
+            };
+            const method = "put";
+            const response = await requestHandler(url, data, header, method);
+            setAddingToCart(false);
+            if (!response?.success) {
+              alert('Something Went Wrong');
+              return;
+            }else{
+      
+            }
+            const { success } = response;
+            if (success === true) {
+              setSnackbar({
+                isOpen: true,
+                message: "Added to cart."
+              })
+            } else {
+              alert('Something Went Wrong');
+              return;
+            }
+      
+          } catch (error) {
+            console.log(error)
+            alert("Something went wrong while adding to cart.");
+            setAddingToCart(false);
+          }
     }
 
     return (
         <Container>
+            <Snackbar
+                open={snackbar.isOpen}
+                autoHideDuration={3000}
+                onClose={() => {
+                    setSnackbar({
+                        isOpen: false,
+                        message: ""
+                    })
+                }}
+                message={snackbar?.message}
+            // action={action}
+            />
             {isLoading === true ?
-                dummyArray.map(item => {
+                dummyArray.map((item) => {
                     return (
                         <div
                             style={{
                                 margin: 10
                             }}
-                            key={item}>
+                            key={item+""}
+                            >
                             <Skeleton height={350} width={320} />
                         </div>
                     )
                 })
                 :
                 products.map((item) => (
-                    <Product key={item._id} cartListener={cartListener} item={item} key={item.id} />
+                    <Product key={item._id} addingToCart={addingToCart} cartListener={cartListener} item={item} key={item.id} />
                 ))}
         </Container>
     )

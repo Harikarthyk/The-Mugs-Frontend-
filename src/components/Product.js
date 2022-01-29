@@ -67,18 +67,23 @@ import { Link } from "react-router-dom";
     }
   `;
   
-  const Product = ({ item, cartListener }) => {
+  const Product = ({ item, cartListener, addingToCart }) => {
     return (
       <Container key={item._id}>
         <Circle />
         <Image src={item.thumbnailImage} />
         <Info>
-
-          <Icon onClick={()=>{
-            cartListener(item, 1);
-          }}>
-            <ShoppingCartOutlined />
-          </Icon>
+          {
+            addingToCart ?
+              <p>Loading...</p>
+              :
+              <Icon onClick={() => {
+                cartListener(item);
+              }}>
+                <ShoppingCartOutlined />
+              </Icon>
+          }
+          
           <Link
             to={`/product/${item._id}`}
           >
@@ -86,9 +91,9 @@ import { Link } from "react-router-dom";
             <SearchOutlined />
           </Icon>
           </Link>
-          <Icon>
+          {/* <Icon>
             <FavoriteBorderOutlined />
-          </Icon>
+          </Icon> */}
         </Info>
       </Container>
     );
