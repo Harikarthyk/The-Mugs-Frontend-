@@ -10,7 +10,7 @@ import { connect } from "react-redux";
 import { forMobile } from "../responsive";
 import { requestHandler } from "../services";
 import { API_ENDPOINT } from "../constants";
-import { Button as RemoveButton } from "@mui/material";
+import { Button as RemoveButton, TextField } from "@mui/material";
 import LoadingOverlay from 'react-loading-overlay';
 
 
@@ -335,6 +335,7 @@ const Cart = ({ user }) => {
             })}
 
           </Info>
+          {console.log(cart, "cart")}
           {
             cart?.items?.length > 0 ?
 
@@ -365,6 +366,18 @@ const Cart = ({ user }) => {
                   <SummaryItemText>Total</SummaryItemText>
                   <SummaryItemPrice>$ {cart?.total}</SummaryItemPrice>
                 </SummaryItem>
+                  <div style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "baseline"
+                  }}>
+                    <TextField id="outlined-basic" label="Coupon Code" inputProps={{ maxLength: 10 }} size="small" variant="outlined" style={{
+                      flex: 1,
+                      marginBottom: 15
+                    }} />
+                    <Button style={{ flex: .3, marginLeft: 5 }}>Apply</Button>
+                  </div>
                 <Button>CHECKOUT NOW</Button>
               </Summary>
               :
