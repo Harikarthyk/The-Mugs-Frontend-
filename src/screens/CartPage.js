@@ -188,7 +188,14 @@ const Cart = ({ user }) => {
     const response = await requestHandler(url, data, header, method);
     setIsLoading(false);
     if (response?.success === true) {
-      console.log(response.cart)
+      setCouponLoader({
+        isApplied: response?.cart?.coupon?._id ? true : false,
+        message: response?.cart?.coupon?._id ? "Coupon Applied": "",
+        isOpen: false,
+        type: response?.cart?.coupon?.type || "",
+        discount: response?.cart?.coupon?.discount || "",
+        coupon: response?.cart?.coupon?.name || ""
+      })
       setCart({ ...response?.cart });
     }
   }, [])
@@ -212,6 +219,14 @@ const Cart = ({ user }) => {
       setIsLoading(false);
       if (response.success === true) {
         setCart({ ...response.cart });
+        setCouponLoader({
+          isApplied: response?.cart?.coupon?._id ? true : false,
+          message: response?.cart?.coupon?._id ? "Coupon Applied": "",
+          isOpen: false,
+          type: response?.cart?.coupon?.type || "",
+          discount: response?.cart?.coupon?.discount || "",
+          coupon: response?.cart?.coupon?.name || ""
+        })
       }
     } catch (error) {
 
@@ -239,10 +254,85 @@ const Cart = ({ user }) => {
       const response = await requestHandler(url, data, header, method);
       setIsLoading(false);
       if (response.success === true) {
+        setCouponLoader({
+          isApplied: response?.cart?.coupon?._id ? true : false,
+          message: response?.cart?.coupon?._id ? "Coupon Applied": "",
+          isOpen: false,
+          type: response?.cart?.coupon?.type || "",
+          discount: response?.cart?.coupon?.discount || "",
+          coupon: response?.cart?.coupon?.name || ""
+        })
         setCart({ ...response.cart });
+        
       }
     } catch (error) {
 
+    }
+  }
+
+  const [couponLoader, setCouponLoader] = useState({
+    isLoading: false,
+    message: "",
+    isOpen: false,
+    coupon: "",
+    isApplied: false,
+    discount: "",
+    type: ""
+  });
+
+  const applyCouponHandler = async () => {
+    try {
+      setCouponLoader({
+        isLoading: true,
+        message: "",
+        isOpen: false,
+        isApplied: false,
+        discount: "",
+        type: ""
+      });
+
+      const url = `${API_ENDPOINT}/cart/coupon/${cart._id}`;
+
+      const data = {
+        "name": couponLoader.coupon,
+        "total": cart.subtotal
+      };
+      const header = {
+        'Content-Type': 'application/json',
+      };
+      const method = "put";
+      const response = await requestHandler(url, data, header, method);
+      console.log(response, "response")
+      if (response.success === true) {
+        setCouponLoader({
+          isLoading: false,
+          message: "Coupon Applied Successfully.",
+          isOpen: true,
+          type: response?.coupon?.type,
+          isApplied: true,
+          discount: response?.coupon?.discount
+        });
+        
+      
+        // setCart({ ...response.cart });
+      }else{
+        setCouponLoader({
+          isLoading: false,
+          message: response.error?.length ? response?.error : "Error in Applying Coupon",
+          isOpen: true,   
+          isApplied: false,
+          discount: ""
+       
+        });
+      }
+
+      
+    } catch (error) {
+      setCouponLoader({
+        isLoading: false,
+        message: "Error in Applying Coupon",
+        isOpen: true
+      })
     }
   }
 
@@ -307,7 +397,7 @@ const Cart = ({ user }) => {
                         {
                           item.quantity > 1 ?
                             <Remove style={{
-                              cursor: "pointer"
+                              cursor: "pointer",
                             }} onClick={() => {
                               updateQuantity(item.quantity - 1, item.product?._id, item.price);
                             }} /> : <></>
@@ -323,7 +413,12 @@ const Cart = ({ user }) => {
                         price: item?.product?.sellingPrice
                       });
                     }} variant="outlined" style={{
-                      cursor: "pointer"
+                      cursor: "pointer",
+                      height: "fit-content",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      alignSelf: "center",
                     }} color="error">
                       Remove
                     </RemoveButton>
@@ -362,22 +457,42 @@ const Cart = ({ user }) => {
               <SummaryItemText>Shipping Discount</SummaryItemText>
               <SummaryItemPrice>$ -5.90</SummaryItemPrice>
             </SummaryItem> */}
-                <SummaryItem type="total">
-                  <SummaryItemText>Total</SummaryItemText>
-                  <SummaryItemPrice>$ {cart?.total}</SummaryItemPrice>
-                </SummaryItem>
                   <div style={{
                     display: "flex",
                     flexDirection: "row",
                     justifyContent: "center",
                     alignItems: "baseline"
                   }}>
-                    <TextField id="outlined-basic" label="Coupon Code" inputProps={{ maxLength: 10 }} size="small" variant="outlined" style={{
+                    <TextField value={couponLoader.coupon} onChange={e=>setCouponLoader({
+                      ...couponLoader,
+                      coupon: e.target.value
+                    })} id="outlined-basic" label="Coupon Code" inputProps={{ maxLength: 10 }} size="small" variant="outlined" style={{
                       flex: 1,
                       marginBottom: 15
                     }} />
-                    <Button style={{ flex: .3, marginLeft: 5 }}>Apply</Button>
+                    <Button style={{ flex: .3, marginLeft: 5 }} disabled={couponLoader.isLoading} onClick={applyCouponHandler}>{couponLoader.isLoading === true ? "Loading." :"Apply"}</Button>
                   </div>
+                  {
+                    couponLoader.message && 
+                    <div 
+                      style={{
+                        textAlign: "center",
+                        color: "gray",
+                        fontSize: "13px"
+                      }}
+                    >
+                      {couponLoader.message}
+                    </div>
+                  }
+                  <SummaryItem>
+                  <SummaryItemText>Discount ({couponLoader?.discount} {couponLoader.type})</SummaryItemText>
+                  <SummaryItemPrice>- $ {couponLoader.isApplied === true ? (couponLoader?.type === "FLAT" ? (Number)(couponLoader.discount) : (((100 - (Number)(couponLoader.discount)) * cart?.subtotal) / 100)).toFixed(2): 0}</SummaryItemPrice>
+                  </SummaryItem>
+                <SummaryItem type="total">
+                  <SummaryItemText>Total</SummaryItemText>
+                  <SummaryItemPrice>$ {couponLoader.isApplied === true ? (couponLoader?.type === "FLAT" ? cart?.subtotal - (Number)(couponLoader.discount) : cart?.subtotal - (((100 - (Number)(couponLoader.discount)) * cart?.subtotal) / 100)).toFixed(2): cart?.subtotal}</SummaryItemPrice>
+                </SummaryItem>
+                  
                 <Button>CHECKOUT NOW</Button>
               </Summary>
               :
