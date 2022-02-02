@@ -6,6 +6,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { API_ENDPOINT } from '../constants';
 import { requestHandler } from '../services';
 import { Snackbar, TextField } from "@mui/material";
+import { useHistory } from 'react-router-dom';
 
 const Container = styled.div`
     padding: 20px;
@@ -26,7 +27,7 @@ const ProductContainer = styled.div`
 // height: 350px;
 `;
 
-function Products({ products, isLoading, cart, addProductToCart, setCart }) {
+function Products({ user, history , products, isLoading, cart, addProductToCart, setCart }) {
     // const [isLoading, setIsLoading] = useState(true);
     // const [products, setProducts] = useState([]);
     const dummyArray = [1, 2, 3, 4, 5, 6, 7];
@@ -114,8 +115,9 @@ function Products({ products, isLoading, cart, addProductToCart, setCart }) {
                 })
                 :
                 products.map((item) => (
-                    <Product key={item._id} addingToCart={addingToCart} cartListener={cartListener} item={item} key={item.id} />
+                    <Product history={history} user={user} key={item._id} addingToCart={addingToCart} cartListener={cartListener} item={item} key={item.id} />
                 ))}
+                {isLoading === false && products.length === 0 ?<div>No items found.</div> :<></>}
         </Container>
     )
 }

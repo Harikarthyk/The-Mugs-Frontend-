@@ -67,7 +67,7 @@ import { Link } from "react-router-dom";
     }
   `;
   
-  const Product = ({ item, cartListener, addingToCart }) => {
+  const Product = ({ user, history, item, cartListener, addingToCart }) => {
     return (
       <Container key={item._id}>
         <Circle />
@@ -78,7 +78,11 @@ import { Link } from "react-router-dom";
               <p>Loading...</p>
               :
               <Icon onClick={() => {
-                cartListener(item);
+                if(user.token){
+                  cartListener(item);
+                }
+                else 
+                history.push('/login')
               }}>
                 <ShoppingCartOutlined />
               </Icon>

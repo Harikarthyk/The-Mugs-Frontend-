@@ -84,6 +84,14 @@ function OrdersPage({ user, cart, removeUser }) {
             <LoadingOverlay
                 active={isLoading}
                 spinner
+                styles={{
+                    content:{
+                        minHeight: '60vh'
+                    },
+                    wrapper:{
+                        minHeight: '60vh'
+                    }}
+                }
             >
                 {orders.map(item => {
                     return (
@@ -272,7 +280,10 @@ function OrdersPage({ user, cart, removeUser }) {
                         </Accordion>
                     )
                 })}
-                {orders.length === 0 ? <div>No Recent Orders to show.</div> : <></>}
+                {isLoading === false&& orders.length === 0 ? <div style={{height: '65vh',
+    textAlign: "center",
+    fontSize: "20px",
+}}> No Recent Orders to show.</div> : <></>}
             </LoadingOverlay>
             <Footer style={{ marginTop: 10 }} />
         </div>

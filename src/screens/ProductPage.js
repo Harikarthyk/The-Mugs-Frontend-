@@ -229,7 +229,7 @@ const ProductPage = ({ user, cart, setCart, addProductToCart, removeUser }) => {
   return (
     <Container>
       <Navbar user={user} cart={cart} history={history} removeUser={removeUser} />
-      <Announcement />
+      {/* <Announcement /> */}
       <LoadingOverlay
         active={addingToCart || isLoading}
         spinner
@@ -374,7 +374,7 @@ const ProductPage = ({ user, cart, setCart, addProductToCart, removeUser }) => {
                 label="Qty"
               />
             </AmountContainer>
-            <Button onClick={addToCartHandler}>ADD TO CART</Button>
+            <Button disabled={!user.token} onClick={addToCartHandler}>ADD TO CART</Button>
           </AddContainer>
         </InfoContainer>
       </Wrapper>

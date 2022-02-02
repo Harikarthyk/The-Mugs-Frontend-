@@ -72,7 +72,7 @@ function ProductListPage({user, cart, route, addProductToCart, setCart, removeUs
     return (
         <div>
                 <Navbar user={user} cart={cart} history={history} removeUser={removeUser}/>
-            <Announcement />
+            {/* <Announcement /> */}
             <Title>
                 {isLoading === true ?
                 <div
@@ -119,7 +119,7 @@ function ProductListPage({user, cart, route, addProductToCart, setCart, removeUs
                     </Select>
                 </Filter>
             </FilterContainer> */}
-            <Products cart={cart} setCart={setCart} addProductToCart={addProductToCart} products={products} isLoading={isLoading} />
+            <Products user={user} history={history} cart={cart} setCart={setCart} addProductToCart={addProductToCart} products={products} isLoading={isLoading} />
             <Footer />
         </div>
     )

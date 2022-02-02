@@ -33,7 +33,9 @@ import { setCart } from './redux/action/cart';
 //   }
 // }
 
-function WrongRoute() {
+function WrongRoute({user}) {
+  if(!user?.token)
+    return <Redirect to="/login" />
   return (
     <Redirect to="/" />
   )
@@ -44,9 +46,12 @@ function App({ user, cart }) {
     <Router>
       <Switch>
 
-        <Route exact path="/cart">
-          <CartPage />
-        </Route>
+        {user.token &&
+          <Route exact path="/cart">
+            <CartPage />
+          </Route>
+        }
+
        
         <Route exact path="/product/:productId">
           <ProductPage />
@@ -75,8 +80,8 @@ function App({ user, cart }) {
         </Route>
         
 
-        <WrongRoute>
-          <HomePage />
+        <WrongRoute user={user}>
+      
         </WrongRoute>
 
       </Switch>

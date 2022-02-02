@@ -45,7 +45,7 @@ function HomePage({ user, cart, addProductToCart, setCart, removeUser }) {
 
     return (
         <div>
-            <Announcement/>
+            {/* <Announcement/> */}
 
             <Navbar 
                 user={user} 
@@ -59,6 +59,8 @@ function HomePage({ user, cart, addProductToCart, setCart, removeUser }) {
             <Categories/>
 
             <Products 
+            history={history}
+            user={user}
                 cart={cart} 
                 setCart={setCart} 
                 addProductToCart={addProductToCart} 
