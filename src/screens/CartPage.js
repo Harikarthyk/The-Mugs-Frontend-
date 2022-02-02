@@ -12,6 +12,7 @@ import { loadScript, requestHandler } from "../services";
 import { API_ENDPOINT } from "../constants";
 import { Box, Button as RemoveButton, Modal, TextField } from "@mui/material";
 import LoadingOverlay from 'react-loading-overlay';
+import { removeUser } from "../redux/action/user";
 
 
 const Container = styled.div``;
@@ -302,7 +303,6 @@ const Cart = ({ user }) => {
       };
       const method = "put";
       const response = await requestHandler(url, data, header, method);
-      console.log(response, "response")
       if (response.success === true) {
         setCouponLoader({
           isLoading: false,
@@ -399,13 +399,15 @@ const Cart = ({ user }) => {
             status: "PAID",
             orderNumber: data.orderNumber,
             order: data._id,
-            cartId: cart._id
+            cartId: cart._id,
+            coupon: couponLoader.isApplied === true ? couponLoader.coupon: null
           };
           const header = {
             'Content-Type': 'application/json',
           };
           const method = "post";
           const response = await requestHandler(transactionUrl, transactionBody, header, method);
+          console.log(response,"res")
           if(response.success){
             setIsModel(false);
             alert('Order Placed Successfully.')
@@ -446,7 +448,6 @@ const Cart = ({ user }) => {
   }, []);
   return (
     <Container>
-      {console.log(user, "SUER")}
       <Modal
         open={isModel}
         onClose={() => setIsModel(false)}
@@ -506,7 +507,7 @@ const Cart = ({ user }) => {
           </div>
         </Box>
       </Modal>
-      <Navbar user={user} cart={cart} history={history} />
+      <Navbar user={user} cart={cart} history={history} removeUser={removeUser} />
       <Announcement />
       <StyledLoader
         active={isLoading}
@@ -685,4 +686,8 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, null)(Cart);
+const mapDispatchToProps = dispatch => ({
+  removeUser: () => dispatch(removeUser())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Cart);

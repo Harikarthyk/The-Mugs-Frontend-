@@ -67,10 +67,14 @@ cursor: pointer;
 ${forMobile({ display: "none" })}
 `;
 
-function navbar({ history, user, cart }) {
+function navbar({ history, user, cart, removeUser }) {
     const logoutHandler = async () => {
         localStorage.clear();
+        removeUser();
         history.push('/');
+    }
+    const viewOrders = async() => {
+        history.push('/orders');
     }
     return (
         <Container>
@@ -85,18 +89,34 @@ function navbar({ history, user, cart }) {
                         <Logo>The MUGS.</Logo>
                     </Link>
                 </Center>
-                <Right>{
-                    user?.token ?
-                        <div style={{
-                            marginRight: 10
-                        }} onClick={logoutHandler}>
-                            <MenuItem>LOGOUT</MenuItem>
-                        </div>
-                        :
-                        <Link to="/login">
-                            <MenuItem>GET STARTED</MenuItem>
-                        </Link>
-                }
+                <Right>
+                    {
+                        user?.token ?
+                            <>
+                                <div
+                                    style={{
+                                        marginRight: 10
+                                    }}
+                                    onClick={logoutHandler}
+                                >
+                                    <MenuItem>LOGOUT</MenuItem>
+
+                                </div>
+                                <div
+                                    style={{
+                                        marginRight: 10
+                                    }}
+                                    onClick={viewOrders}
+                                >
+                                    <MenuItem>VIEW ORDERS</MenuItem>
+
+                                </div>
+                            </>
+                            :
+                            <Link to="/login">
+                                <MenuItem>GET STARTED</MenuItem>
+                            </Link>
+                    }
                     <Link to="/cart">
                         <MenuItem>
                             {cart?.products ? <Badge badgeContent={cart?.products?.length} color="primary">

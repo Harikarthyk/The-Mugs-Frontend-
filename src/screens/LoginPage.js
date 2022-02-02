@@ -95,7 +95,7 @@ function LoginPage({ user, cart, setUser }) {
 
     return (
         <Container>
-            <Navbar user={user} cart={cart} history={history}/>
+            <Navbar user={user} cart={cart} history={history} removeUser={()=>{}}/>
             <Announcement />
             <Wrapper>
                 <ImageWrapper>

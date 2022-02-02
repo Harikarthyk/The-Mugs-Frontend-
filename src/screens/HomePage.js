@@ -9,9 +9,10 @@ import Products from '../components/Products'
 import Slider from '../components/Slider'
 import { API_ENDPOINT } from '../constants';
 import { addProduct, setCart } from '../redux/action/cart';
+import { removeUser } from '../redux/action/user'
 import { requestHandler } from '../services';
 
-function HomePage({ user, cart, addProductToCart, setCart }) {
+function HomePage({ user, cart, addProductToCart, setCart, removeUser }) {
 
     const history = useHistory();
     const [products, setProducts] = useState({
@@ -50,6 +51,7 @@ function HomePage({ user, cart, addProductToCart, setCart }) {
                 user={user} 
                 cart={cart} 
                 history={history}
+                removeUser={removeUser}
             />
 
             <Slider/>
@@ -72,6 +74,7 @@ function HomePage({ user, cart, addProductToCart, setCart }) {
 const mapDispatchToProps = dispatch => ({
     addProductToCart: product => dispatch(addProduct(product)),
     setCart: cart => dispatch(setCart(cart)),
+    removeUser: () => dispatch(removeUser())
 });
 
 const mapStateToProps = state => {

@@ -17,6 +17,7 @@ import ReactImageMagnify from 'react-image-magnify';
 import AwesomeSlider from 'react-awesome-slider';
 import 'react-awesome-slider/dist/styles.css';
 import LoadingOverlay from "react-loading-overlay";
+import { removeUser } from "../redux/action/user";
 
 
 const Container = styled.div``;
@@ -124,7 +125,7 @@ const Button = styled.button`
   }
 `;
 
-const ProductPage = ({ user, cart, setCart, addProductToCart }) => {
+const ProductPage = ({ user, cart, setCart, addProductToCart, removeUser }) => {
 
   const [product, setProduct] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -227,7 +228,7 @@ const ProductPage = ({ user, cart, setCart, addProductToCart }) => {
 
   return (
     <Container>
-      <Navbar user={user} cart={cart} history={history} />
+      <Navbar user={user} cart={cart} history={history} removeUser={removeUser} />
       <Announcement />
       <LoadingOverlay
         active={addingToCart || isLoading}
@@ -386,6 +387,7 @@ const ProductPage = ({ user, cart, setCart, addProductToCart }) => {
 const mapDispatchToProps = dispatch => ({
   setCart: user => dispatch(setCart(user)),
   addProductToCart: product => dispatch(addProduct(product)),
+  removeUser: () => dispatch(removeUser())
 });
 
 const mapStateToProps = state => {

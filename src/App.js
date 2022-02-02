@@ -11,6 +11,7 @@ import {
   Route,
   Redirect
 } from "react-router-dom";
+import OrdersPage from './screens/OrdersPage';
 import { connect } from 'react-redux';
 import { setCart } from './redux/action/cart';
 
@@ -65,9 +66,14 @@ function App({ user, cart }) {
           <ProductListBannerPage />
         </Route>
 
+        <Route exact path="/orders">
+          <OrdersPage />
+        </Route>
+
         <Route exact path="/">
           <HomePage />
         </Route>
+        
 
         <WrongRoute>
           <HomePage />

@@ -11,6 +11,7 @@ import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { connect } from 'react-redux';
 import { addProduct, setCart } from '../redux/action/cart';
+import { removeUser } from '../redux/action/user';
 
 const Container = styled.div`
 `;
@@ -41,7 +42,7 @@ const Select = styled.select`
 
 const Option = styled.option``;
 
-function ProductListPage({user, cart, addProductToCart, setCart}) {
+function ProductListPage({user, cart, addProductToCart, setCart, removeUser}) {
     const [collection, setCollection] = useState({});
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -69,7 +70,7 @@ function ProductListPage({user, cart, addProductToCart, setCart}) {
 
     return (
         <div>
-                <Navbar user={user} cart={cart} history={history}/>
+                <Navbar user={user} cart={cart} history={history} removeUser={removeUser}/>
             <Announcement />
             <Title>
                 {isLoading === true ?
@@ -127,6 +128,7 @@ function ProductListPage({user, cart, addProductToCart, setCart}) {
 const mapDispatchToProps = dispatch => ({
     setCart: user => dispatch(setCart(user)),
     addProductToCart: product => dispatch(addProduct(product)),
+    removeUser: () => dispatch(removeUser())
 });
 
 const mapStateToProps = state => {

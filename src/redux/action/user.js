@@ -10,7 +10,6 @@ export const setUser = input => {
 
 export const removeUser = input => {
     return {
-        type: REMOVE_USER,
-        payload: input
+        type: REMOVE_USER
     };
 };
