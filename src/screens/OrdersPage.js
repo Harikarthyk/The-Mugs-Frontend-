@@ -150,7 +150,9 @@ function OrdersPage({ user, cart, removeUser }) {
                                             alignSelf: "center",
                                             alignItems: "center",
                                             margin: "auto",
-                                            marginTop: "10px"
+                                            marginTop: "10px",
+                                            backgroundColor: "#f1e7e7",
+                                            padding: 10
                                         }}>
                                             <div>
                                                 <div>Product: {product.name}</div>
@@ -169,6 +171,102 @@ function OrdersPage({ user, cart, removeUser }) {
                                         </div>
                                     )
                                 })}
+                                <div style={{
+                                            display: "flex",
+                                            width: "98%",
+                                            justifyContent: "space-around",
+                                            alignSelf: "center",
+                                            alignItems: "center",
+                                            margin: "auto",
+                                            marginTop: "10px",
+                                            backgroundColor: "#f1e7e7",
+                                            padding: 10
+                                        }}>
+                                            <div>
+                                                Subtotal
+                                            </div>
+                                            <div style={{
+                                                textAlign: "center"
+                                            }}>
+
+
+                                                <div>
+                                                    INR. {item.subtotal}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style={{
+                                            display: "flex",
+                                            width: "98%",
+                                            justifyContent: "space-around",
+                                            alignSelf: "center",
+                                            alignItems: "center",
+                                            margin: "auto",
+                                            marginTop: "10px",
+                                            backgroundColor: "#f1e7e7",
+                                            padding: 10
+                                        }}>
+                                            <div>
+                                                Discount
+                                            </div>
+                                            <div style={{
+                                                textAlign: "center"
+                                            }}>
+
+
+                                                <div>
+                                                    INR. {item.discount}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style={{
+                                            display: "flex",
+                                            width: "98%",
+                                            justifyContent: "space-around",
+                                            alignSelf: "center",
+                                            alignItems: "center",
+                                            margin: "auto",
+                                            marginTop: "10px",
+                                            backgroundColor: "#f1e7e7",
+                                            padding: 10
+                                        }}>
+                                            <div>
+                                               Tax Amount
+                                            </div>
+                                            <div style={{
+                                                textAlign: "center"
+                                            }}>
+
+
+                                                <div>
+                                                    INR. {item.tax}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style={{
+                                            display: "flex",
+                                            width: "98%",
+                                            justifyContent: "space-around",
+                                            alignSelf: "center",
+                                            alignItems: "center",
+                                            margin: "auto",
+                                            marginTop: "10px",
+                                            backgroundColor: "#f1e7e7",
+                                            padding: 10
+                                        }}>
+                                            <div>
+                                                Total Amount
+                                            </div>
+                                            <div style={{
+                                                textAlign: "center"
+                                            }}>
+
+
+                                                <div>
+                                                    INR. {item.total}
+                                                </div>
+                                            </div>
+                                        </div>
 
                             </AccordionDetails>
                         </Accordion>
