@@ -1,1 +1,1 @@
-export const API_ENDPOINT = `http://hk07.herokuapp.com/api/v1`;
+export const API_ENDPOINT = `https://hk07.herokuapp.com/api/v1`;
