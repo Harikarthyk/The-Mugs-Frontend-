@@ -89,9 +89,9 @@ const Footer = () => {
   return (
     <Container>
       <Left>
-        <Logo>The MUGS.</Logo>
+        <Logo>The E-Com.</Logo>
         <Desc>
-          Gift your Friends, Family, Love with something different, Stay Connect with The Mugs.
+          Gift your Friends, Family, Love with something different, Stay Connect with The E-Com.
         </Desc>
         <SocialContainer>
           <SocialIcon color="3B5999">

@@ -103,7 +103,7 @@ function LoginPage({ user, cart, setUser }) {
                 </ImageWrapper>
                 <Text>
                     <Logo src="https://user-images.githubusercontent.com/54505967/136685543-82e884b6-fdf7-41ef-8759-f713d74c7da7.png" />
-                    <Title>Lets Get Started with The Mugs...</Title>
+                    <Title>Lets Get Started with The E-Com...</Title>
                     <GoogleLogin
                         clientId={'322501477862-c7dd2lpqggvsmhok7au0baha7ee88bbv.apps.googleusercontent.com'}
                         onSuccess={responseGoogle}

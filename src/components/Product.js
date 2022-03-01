@@ -95,10 +95,22 @@ import { Link } from "react-router-dom";
             <SearchOutlined />
           </Icon>
           </Link>
+          <div style={{
+            color: "black",
+            position: "absolute",
+            bottom: 10,
+            zIndex: 1,
+            fontWeight: "bold",
+            fontSize: 18
+          }}>
+            {item.name}
+          </div>
           {/* <Icon>
             <FavoriteBorderOutlined />
           </Icon> */}
         </Info>
+        
+        
       </Container>
     );
   };

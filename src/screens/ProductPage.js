@@ -353,6 +353,7 @@ const ProductPage = ({ user, cart, setCart, addProductToCart, removeUser }) => {
               </FilterSize>
             </Filter>
           </FilterContainer> */}
+          {product.isActive === true &&
           <AddContainer>
             <AmountContainer>
               <TextField
@@ -376,6 +377,7 @@ const ProductPage = ({ user, cart, setCart, addProductToCart, removeUser }) => {
             </AmountContainer>
             <Button disabled={!user.token} onClick={addToCartHandler}>ADD TO CART</Button>
           </AddContainer>
+          }
         </InfoContainer>
       </Wrapper>
       </LoadingOverlay>

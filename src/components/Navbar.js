@@ -86,7 +86,7 @@ function navbar({ history, user, cart, removeUser }) {
                     <Link
                         to="/"
                     >
-                        <Logo>The MUGS.</Logo>
+                        <Logo>The E-Com.</Logo>
                     </Link>
                 </Center>
                 <Right>

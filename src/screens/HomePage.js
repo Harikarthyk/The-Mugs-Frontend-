@@ -23,7 +23,7 @@ function HomePage({ user, cart, addProductToCart, setCart, removeUser }) {
 
 
     const getPopularProducts = async() => {
-        const url = `${API_ENDPOINT}/product/?limit=6&page=1`;
+        const url = `${API_ENDPOINT}/product/?limit=10&page=1`;
         const data = null;
         const header = {
             'Content-Type': 'application/json',

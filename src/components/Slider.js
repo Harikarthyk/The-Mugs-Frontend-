@@ -41,6 +41,7 @@ const Arrow = styled.div`
 const Wrapper = styled.div`
   height: 100%;
   display: flex;
+  width: 100%;
   transition: all 1.5s ease;
   transform: translateX(${(props) => props.slideIndex * -100}vw);
 `;
@@ -115,7 +116,7 @@ function Slider() {
 
         try {
             setIsLoading(true);
-            const url = `${API_ENDPOINT}/banner`;
+            const url = `${API_ENDPOINT}/banner/?isActive=true`;
             const data = null;
             const header = {
                 'Content-Type': 'application/json',
@@ -147,7 +148,9 @@ function Slider() {
                     >
                     <Slide bg={"red"} key={item._id}>
                         <ImgContainer>
-                            <Image src={item.bannerImage} alt={item.bannerHeading} />
+                            <Image style={{
+                                objectFit: "cover"
+                            }} src={item.bannerImage} alt={item.bannerHeading} />
                         </ImgContainer>
                         {/* <InfoContainer>
                             <Title>{item.bannerHeading}</Title>
