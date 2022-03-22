@@ -94,6 +94,7 @@ function OrdersPage({ user, cart, removeUser }) {
                 }
             >
                 {orders.map(item => {
+                    if(item.transaction === null || item.status === 'CREATED') return;
                     return (
 
                         <Accordion style={{

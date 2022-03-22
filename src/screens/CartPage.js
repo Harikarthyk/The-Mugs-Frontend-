@@ -199,7 +199,7 @@ const Cart = ({ user }) => {
       })
       setCart({ ...response?.cart });
     }
-  }, [])
+  }, []);
 
   const removeFromCartHandler = async (item) => {
     try {
@@ -336,58 +336,58 @@ const Cart = ({ user }) => {
     }
   }
 
-  const displayRazorpay = async() => {
-		const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
+  const displayRazorpay = async () => {
+    const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
 
-		if (!res) {
-			alert('Razorpay SDK failed to load. Are you online?')
-			return
-		}
+    if (!res) {
+      alert('Razorpay SDK failed to load. Are you online?')
+      return
+    }
 
-		  const url = `${API_ENDPOINT}/order/`;
-      const body = {
-        subtotal: cart.subtotal,
-        total: couponLoader.isApplied === true ? (couponLoader?.type === "FLAT" ? cart?.subtotal - (Number)(couponLoader.discount) : cart?.subtotal - (((100 - (Number)(couponLoader.discount)) * cart?.subtotal) / 100)).toFixed(2): cart?.subtotal,
-        tax: 0,
-        discount: couponLoader.isApplied === true ? (couponLoader?.type === "FLAT" ? (Number)(couponLoader.discount) : (((100 - (Number)(couponLoader.discount)) * cart?.subtotal) / 100)).toFixed(2): 0,
-        couponCode: '',
-        user: user.user.user._id,
-        items: cart.items.map(item => {
-          return({
-            product: item.product._id,
-            quantity: item.quantity,
-            image:item.product.thumbnailImage,
-            name: item.product.name,
-            price: item.product.sellingPrice
-          })
-        }),
-        phone: address.phone,
-        shippingAddress: address,
-        billingAddress: address,
-        shippingAmount: 0,
-        paymentMethod: "RAZORYPAY"
-      };
-      const header = {
-        'Content-Type': 'application/json',
-      };
-      const method = "post";
-      const response = await requestHandler(url, body, header, method);
-      if(response.success === false){
-        alert('Something went wrong.')
-        return;
-      }
-      const data = response.order;
+    const url = `${API_ENDPOINT}/order/`;
+    const body = {
+      subtotal: cart.subtotal,
+      total: couponLoader.isApplied === true ? (couponLoader?.type === "FLAT" ? cart?.subtotal - (Number)(couponLoader.discount) : cart?.subtotal - (((100 - (Number)(couponLoader.discount)) * cart?.subtotal) / 100)).toFixed(2) : cart?.subtotal,
+      tax: 0,
+      discount: couponLoader.isApplied === true ? (couponLoader?.type === "FLAT" ? (Number)(couponLoader.discount) : (((100 - (Number)(couponLoader.discount)) * cart?.subtotal) / 100)).toFixed(2) : 0,
+      couponCode: '',
+      user: user.user.user._id,
+      items: cart.items.map(item => {
+        return ({
+          product: item.product._id,
+          quantity: item.quantity,
+          image: item.product.thumbnailImage,
+          name: item.product.name,
+          price: item.product.sellingPrice
+        })
+      }),
+      phone: address.phone,
+      shippingAddress: address,
+      billingAddress: address,
+      shippingAmount: 0,
+      paymentMethod: "RAZORYPAY"
+    };
+    const header = {
+      'Content-Type': 'application/json',
+    };
+    const method = "post";
+    const response = await requestHandler(url, body, header, method);
+    if (response.success === false) {
+      alert('Something went wrong.')
+      return;
+    }
+    const data = response.order;
 
-		const options = {
-			key: 'rzp_test_LFDCiolbIVRZTm',
-			currency: data.currency,
-			amount: (data.total*100)+"",
-			// order_id: data._id,
-			name: 'The E-Com.',
-			description: 'Thank you for your Purchase.',
-			image: 'data:image/jpeg;base64,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',
-			handler: async function (razResponse) {
-        if(razResponse.razorpay_payment_id){
+    const options = {
+      key: 'rzp_test_LFDCiolbIVRZTm',
+      currency: data.currency,
+      amount: (data.total * 100) + "",
+      // order_id: data._id,
+      name: 'The E-Com.',
+      description: 'Thank you for your Purchase.',
+      image: 'data:image/jpeg;base64,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',
+      handler: async function (razResponse) {
+        if (razResponse.razorpay_payment_id) {
           const transactionUrl = `${API_ENDPOINT}/transaction`;
           const transactionBody = {
             user: user.user.user._id,
@@ -399,30 +399,31 @@ const Cart = ({ user }) => {
             orderNumber: data.orderNumber,
             order: data._id,
             cartId: cart._id,
-            coupon: couponLoader.isApplied === true ? couponLoader.coupon: null
+            coupon: couponLoader.isApplied === true ? couponLoader.coupon : null
           };
           const header = {
             'Content-Type': 'application/json',
           };
           const method = "post";
           const response = await requestHandler(transactionUrl, transactionBody, header, method);
-          console.log(response,"res")
-          if(response.success){
+          const newRes = await requestHandler(`${API_ENDPOINT}/order/${data._id}`, { status: 'PROCESSING'}, {'Content-Type': 'application/json'}, 'put')
+          console.log(newRes);
+          if (response.success) {
             setIsModel(false);
             alert('Order Placed Successfully.');
             history.push('/orders');
           }
         }
-			},
-			prefill: {
-				name: user.user.user.name,
-				email: user.user.user.email,
-				contact: address.phone
-			}
-		}
-		const paymentObject = new window.Razorpay(options)
-		paymentObject.open();
-	}
+      },
+      prefill: {
+        name: user.user.user.name,
+        email: user.user.user.email,
+        contact: address.phone
+      }
+    }
+    const paymentObject = new window.Razorpay(options)
+    paymentObject.open();
+  }
 
   const [isModel, setIsModel] = useState(false);
   const [address, setAddress] = useState({
@@ -433,7 +434,7 @@ const Cart = ({ user }) => {
     city: 'Coimbatore',
     state: 'Tamil Nadu',
     country: 'India'
-  })
+  });
 
   const checkoutHandler = () => {
     setIsModel(true);
@@ -446,7 +447,7 @@ const Cart = ({ user }) => {
     }else if(address.phone.length !== 10){
       alert('Enter valid Phone Number.');
       return;
-    }else if(address.pinCode.length === 6){
+    }else if(address.pinCode.length !== 6){
       alert('Enter valid Pin Code.');
       return;
     }
@@ -457,28 +458,32 @@ const Cart = ({ user }) => {
     window.scrollTo(0, 0);
   }, []);
 
-  
+
   return (
     <Container>
+      
+      {/* Shipping Address Container */}
       <Modal
         open={isModel}
         onClose={() => setIsModel(false)}
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
-        <Box sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 400,
-          bgcolor: 'background.paper',
-          border: '2px solid #000',
-          boxShadow: 24,
-          pt: 2,
-          px: 4,
-          pb: 3, width: '80%'
-        }}>
+        <Box 
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            border: '2px solid #000',
+            boxShadow: 24,
+            pt: 2,
+            px: 4,
+            pb: 3, width: '80%'
+          }}
+      >
           <h2 id="parent-modal-title" style={{marginBottom: 10}}>Enter your Shipping Address.</h2>
           <p style={{marginBottom: 30, color: "gray"}}>Currently Available in Coimbatore and Tamil Nadu.</p>
           
@@ -598,6 +603,7 @@ const Cart = ({ user }) => {
           </div>
         </Box>
       </Modal>
+      
       <Navbar user={user} cart={cart} history={history} removeUser={removeUser} />
       {/* <Announcement /> */}
       <StyledLoader
