@@ -443,6 +443,12 @@ const Cart = ({ user }) => {
     if(!address.line1 || !address.line2 || !address.phone || !address.pinCode || !address.state || !address.city){
       alert('All values are required.');
       return;
+    }else if(address.phone.length !== 10){
+      alert('Enter valid Phone Number.');
+      return;
+    }else if(address.pinCode.length === 6){
+      alert('Enter valid Pin Code.');
+      return;
     }
     displayRazorpay();
   }
@@ -450,6 +456,8 @@ const Cart = ({ user }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  
   return (
     <Container>
       <Modal
@@ -471,42 +479,120 @@ const Cart = ({ user }) => {
           px: 4,
           pb: 3, width: '80%'
         }}>
-          <h2 id="parent-modal-title">Enter your Shipping Address.</h2>
-          <div style={{
-            display: "flex",
-            flexDirection: "column"
-          }}>
-            <TextField style={{ marginTop: 10 }} id="outlined-basic" value={address.phone} required={true} onChange={e => setAddress({ ...address, phone: e.target.value })} label="Phone Number" variant="outlined" />
-            <TextField style={{ marginTop: 10 }} id="outlined-basic" value={address.line1} required={true}onChange={e => setAddress({ ...address, line1: e.target.value })} label="Line 1" variant="outlined" />
-            <TextField style={{ marginTop: 10 }} id="outlined-basic" value={address.line2} required={true}onChange={e => setAddress({ ...address, line2: e.target.value })} label="Line 2" variant="outlined" />
-            <TextField style={{ marginTop: 10 }} id="outlined-basic" value={address.city}required={true} onChange={e => setAddress({ ...address, city: e.target.value })} label="City" variant="outlined" />
-            <TextField style={{ marginTop: 10 }} id="outlined-basic" value={address.pinCode} required={true}onChange={e => setAddress({ ...address, pinCode: e.target.value })} label="Pin code" variant="outlined" />
-            <TextField style={{ marginTop: 10 }} id="outlined-basic" value={address.state} required={true}onChange={e => setAddress({ ...address, state: e.target.value })} label="State" variant="outlined" />
-          </div>
-          <div style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            margin: "15px 0px 0px 0px"
-          }}>
-            <RemoveButton variant="outlined" style={{
-              cursor: "pointer",
-              height: "fit-content",
+          <h2 id="parent-modal-title" style={{marginBottom: 10}}>Enter your Shipping Address.</h2>
+          <p style={{marginBottom: 30, color: "gray"}}>Currently Available in Coimbatore and Tamil Nadu.</p>
+          
+          <div 
+            style={{
               display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              alignSelf: "center",
-            }} onClick={() => setIsModel(false)} >
+              flexDirection: "column"
+            }}
+          >
+            <TextField 
+              inputProps={{
+                maxLength: 10,
+                minLength: 10
+              }}
+              style={{ marginTop: 10 }} 
+              id="outlined-basic" 
+              value={address.phone} 
+              required={true} 
+              onChange={e => setAddress({ ...address, phone: e.target.value })} 
+              label="Phone Number" 
+              variant="outlined" 
+            />
+            <TextField 
+              inputProps={{
+                maxLength: 100,
+              }}
+              style={{ marginTop: 10 }} 
+              id="outlined-basic" 
+              value={address.line1} 
+              required={true}
+              onChange={e => setAddress({ ...address, line1: e.target.value })} 
+              label="Line 1" 
+              variant="outlined" 
+            />
+            <TextField 
+              inputProps={{
+                maxLength: 50,
+              }} 
+              style={{ marginTop: 10 }} 
+              id="outlined-basic" 
+              value={address.line2} 
+              required={true}
+              onChange={e => setAddress({ ...address, line2: e.target.value })} 
+              label="Line 2" 
+              variant="outlined" 
+            />
+            <TextField 
+              style={{ marginTop: 10 }} 
+              id="outlined-basic" 
+              value={address.city}
+              required={true} 
+              // onChange={e => setAddress({ ...address, city: e.target.value })} 
+              label="City" 
+              variant="outlined" 
+            />
+            <TextField 
+              inputProps={{
+                maxLength: 6,
+                minLength: 6
+              }} 
+              style={{ marginTop: 10 }} 
+
+              id="outlined-basic" 
+              value={address.pinCode} 
+              required={true}
+              onChange={e => setAddress({ ...address, pinCode: e.target.value })} 
+              label="Pin code" 
+              variant="outlined" 
+            />
+            <TextField 
+              style={{ 
+                marginTop: 10
+              }} 
+              id="outlined-basic" 
+              value={address.state} 
+              required={true}
+              // onChange={e => setAddress({ ...address, state: e.target.value })} 
+              label="State" 
+              variant="outlined" 
+            />
+          </div>
+          <div 
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              margin: "15px 0px 0px 0px"
+            }}
+          >
+            <RemoveButton variant="outlined" 
+              style={{
+                cursor: "pointer",
+                height: "fit-content",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                alignSelf: "center",
+              }} 
+              onClick={() => setIsModel(false)} 
+            >
               BACK
             </RemoveButton>
-            <RemoveButton variant="outlined" style={{
-              cursor: "pointer",
-              height: "fit-content",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              alignSelf: "center",
-            }} onClick={paymentHandler} >
+            <RemoveButton 
+              variant="outlined" 
+                style={{
+                cursor: "pointer",
+                height: "fit-content",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                alignSelf: "center",
+              }} 
+              onClick={paymentHandler} 
+            >
               PROCEED TO PAYMENT
             </RemoveButton>
           </div>
