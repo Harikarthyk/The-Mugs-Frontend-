@@ -34,15 +34,10 @@ const Title = styled.h1`
 `;
 
 const Button = styled.button`
-border: none;
 padding: 10px;
-/* background-color: white; */
 color: gray;
 cursor: pointer;
-position: absolute;
-font-weight: 600;
-bottom: 19%;
-left: 35%;
+margin-top: 75px;
 `;
 
 const CategoryItem = ({ item }) => {
